@@ -5,7 +5,7 @@
 The objective of this lab is to give you hands-on experience with AWS' fully-managed data warehouse service, [Amazon Redshift](https://aws.amazon.com/redshift/), as well as with Amazon Redshift Spectrum, a feature that lets you query external data.
 
 <p align="center">
-    <img alt="lab_architecture" src="https://github.com/aws-samples/virtual-immersion-weeks/raw/master/redshift/img/lab_architecture.png" width="85%">
+    <img alt="lab_architecture" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/master/redshift/img/lab_architecture.png" width="85%">
 </p>
 
 In this example we are going to create a Redshift cluster from scratch, populate it with data and run queries on it. Then, we are going to create an external schema and table, and use Redshift Spectrum to demonstrate how you can join data residing both in Redshift and in S3.
@@ -25,7 +25,7 @@ bash initialize.sh
 ```
 Write down the account ID that the script prints to the terminal. _This is important and will be used in a later step._
 
-![account_id](https://github.com/aws-samples/virtual-immersion-weeks/raw/master/redshift/img/account_id.png "Account ID shown in terminal")
+![account_id](https://github.com/aws-samples/virtual-immersion-week-labs/raw/master/redshift/img/account_id.png "Account ID shown in terminal")
 
 ### B. Spin up and configure your Redshift cluster.
 
@@ -34,13 +34,13 @@ Write down the account ID that the script prints to the terminal. _This is impor
 Click on the _Services_ menu in the console, and type in _Redshift_ in the search bar, or click on _Amazon Redshift_ under _Database_.
 
 <p align="center">
-    <img alt="menu_redshift" src="https://github.com/aws-samples/virtual-immersion-weeks/raw/master/redshift/img/menu_redshift.png" width="85%">
+    <img alt="menu_redshift" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/master/redshift/img/menu_redshift.png" width="85%">
 </p>
 
 Once on the Redshift console, click on the _Create cluster_ at the right of the screen.
 
 <p align="center">
-    <img alt="redshift_console" src="https://github.com/aws-samples/virtual-immersion-weeks/raw/master/redshift/img/redshift_console.png" width="75%">
+    <img alt="redshift_console" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/master/redshift/img/redshift_console.png" width="75%">
 </p>
 
 This will take you to the **Create cluster** console:
@@ -49,7 +49,7 @@ This will take you to the **Create cluster** console:
   * As for the number of nodes, we will be using the default value of **2**.
   
 <p align="center">
-    <img alt="cluster_config" src="https://github.com/aws-samples/virtual-immersion-weeks/raw/master/redshift/img/cluster_configuration.png" width="75%">
+    <img alt="cluster_config" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/master/redshift/img/cluster_configuration.png" width="75%">
 </p>
 
 Now you will configure database-specific parameters. Scroll down to the _Database configurations_ panel:
@@ -58,20 +58,20 @@ Now you will configure database-specific parameters. Scroll down to the _Databas
   * Now choose a password and enter it in the _Master user password_ field. Recommended for this demo is: Redshift123
 
 <p align="center">
-    <img alt="database_config" src="https://github.com/aws-samples/virtual-immersion-weeks/raw/master/redshift/img/database_configuration.png" width="75%">
+    <img alt="database_config" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/master/redshift/img/database_configuration.png" width="75%">
 </p>
 
 As the final step before launching the cluster, scroll down to the _Cluster permissions_ panel and unfold it.
 From the _Available IAM roles_, choose **Cloud9-myRedShiftRole** and click on the _Add IAM role_ button right of it.
 
 <p align="center">
-    <img alt="cluster_permissions" src="https://github.com/aws-samples/virtual-immersion-weeks/raw/master/redshift/img/cluster_permissions.png" width="75%">
+    <img alt="cluster_permissions" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/master/redshift/img/cluster_permissions.png" width="75%">
 </p>
 
 Now you are ready to launch the cluster. Scroll to the bottom of the page and click on _Create cluster_.
 
 <p align="center">
-    <img alt="create_cluster" src="https://github.com/aws-samples/virtual-immersion-weeks/raw/master/redshift/img/create_cluster.png" width="85%">
+    <img alt="create_cluster" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/master/redshift/img/create_cluster.png" width="85%">
 </p>
 
 #### 2. Create a connection to your cluster and open the query editor.
@@ -85,7 +85,7 @@ Now you are ready to launch the cluster. Scroll to the bottom of the page and cl
    * Click on _Connect to database_.
 
 <p align="center">
-    <img alt="connect_to_db" src="https://github.com/aws-samples/virtual-immersion-weeks/raw/master/redshift/img/connect_to_database.png" width="85%">
+    <img alt="connect_to_db" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/master/redshift/img/connect_to_database.png" width="85%">
 </p>
 
 #### 3. Create the tables in Redshift.
