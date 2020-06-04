@@ -1,0 +1,141 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+
+  ImmersionWeekProcessStreamingLambdaPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      ManagedPolicyName: 'ImmersionWeekProcessStreamingLambdaPolicy'
+      Path: '/'
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: 'Allow'
+            Action:
+              - kinesis:DescribeStream
+              - kinesis:GetRecords
+              - kinesis:GetShardIterator
+            Resource:
+              - !Sub arn:aws:kinesis:${AWS::Region}:${AWS::AccountId}:stream/ClientDataStream
+          - Effect: 'Allow'
+            Action:
+              - s3:ListBucket
+              - s3:PutObject
+              - sqs:SendMessageBatch
+              - sqs:SendMessage
+            Resource:
+              - !Sub 'arn:aws:s3:::historical-data-${AWS::AccountId}/*'
+              - !Sub 'arn:aws:s3:::historical-data-${AWS::AccountId}'
+              - !Sub 'arn:aws:sqs:${AWS::Region}:${AWS::AccountId}:AveragedDataQueue'
+              - !Sub 'arn:aws:sqs:${AWS::Region}:${AWS::AccountId}:InvalidDataQueue'
+          - Effect: 'Allow'
+            Action:
+              - s3:ListBucket
+              - s3:PutObject
+            Resource:
+              - !Sub 'arn:aws:s3:::historical-data-${AWS::AccountId}/*'
+              - !Sub 'arn:aws:s3:::historical-data-${AWS::AccountId}'
+          - Effect: 'Allow'
+            Action:
+              - kinesis:ListStreams
+              - s3:HeadBucket
+            Resource: '*'
+      Roles:
+        - !Ref ImmersionWeekProcessStreamingDataRole
+
+  ImmersionWeekProcessStreamingDataRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: 'ImmersionWeekProcessStreamingDataRole'
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action:
+              - sts:AssumeRole
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+      Path: "/"
+      ManagedPolicyArns:
+      - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+
+  ImmersionWeekProcessInvalidDataLambdaPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      ManagedPolicyName: 'ImmersionWeekProcessInvalidDataLambdaPolicy'
+      Path: '/'
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: 'Allow'
+            Action:
+              - s3:ListBucket
+              - s3:PutObject
+              - sqs:DeleteMessage
+              - sqs:GetQueueAttributes
+              - sqs:ReceiveMessage
+            Resource:
+              - !Sub 'arn:aws:s3:::invalid-data-${AWS::AccountId}/*'
+              - !Sub 'arn:aws:s3:::invalid-data-${AWS::AccountId}'
+              - !Sub 'arn:aws:sqs:${AWS::Region}:${AWS::AccountId}:InvalidDataQueue'
+          - Effect: 'Allow'
+            Action:
+              - s3:HeadBucket
+            Resource: '*'
+      Roles:
+        - !Ref ImmersionWeekProcessInvalidDataRole
+
+  ImmersionWeekProcessInvalidDataRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: 'ImmersionWeekProcessInvalidDataRole'
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action:
+              - sts:AssumeRole
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+      Path: "/"
+      ManagedPolicyArns:
+      - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+
+  ImmersionWeekStoreAveragesLambdaPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      ManagedPolicyName: 'ImmersionWeekStoreAveragesLambdaPolicy'
+      Path: '/'
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: 'Allow'
+            Action:
+              - dynamodb:PutItem
+              - dynamodb:UpdateItem
+              - sqs:DeleteMessage
+              - sqs:GetQueueAttributes
+              - sqs:ReceiveMessage
+            Resource:
+              - !Sub 'arn:aws:sqs:${AWS::Region}:${AWS::AccountId}:AveragedDataQueue'
+              - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/PointInTimeAverages'
+      Roles:
+        - !Ref ImmersionWeekStoreAveragesRole
+
+  ImmersionWeekStoreAveragesRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: 'ImmersionWeekStoreAveragesRole'
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action:
+              - sts:AssumeRole
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+      Path: "/"
+      ManagedPolicyArns:
+      - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole

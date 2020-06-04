@@ -1,0 +1,31 @@
+<html>
+    <head>
+        <title>Virtual Immersion Week Lab</title>
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    </head>
+    <script>
+
+        /***************************************************/
+        /* ENTER YOUR BACKEND CLOUDFRONT DISTRIBUTION HERE */
+        /***************************************************/
+        const backendCfDistribution = "https://d3iz9eo3dd6ru9.cloudfront.net/";
+
+        $(document).ready(function() {
+            $.ajax({
+                url: backendCfDistribution,
+                type: "GET",
+                beforeSend: function(xhr) {
+                    xhr.setRequestHeader('cache-control', 'max-age 0');
+                },
+                success: function(data) {
+                    $("#status").html("Loaded");
+                    $("#result").html(data);
+                }
+            })
+        });
+    </script>
+    <body>
+        <h1 id="status">Loading...</h1>
+        <h2 id="result"></h2>
+    </body>
+</html>
