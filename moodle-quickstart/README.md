@@ -1,14 +1,14 @@
 ### Quickstart - Install a single-node Moodle on AWS
 
-> Setup a single-node Moodle LMS on an EC2 instance behind an ElasticLoad Balancer with HTTPS. This setup can be used as a starting point and system administrators can choose to scale 'up' or 'out' by increasing the instance size, adding more instances or hosting the database in a managed database service like Amazon RDS etc. The approximate monthly cost of this setup less than $2/day.
+> Setup a single-node Moodle LMS on an Amazon EC2 instance behind an Elastic Load Balancer (ELB) with HTTPS. This setup can be used as a starting point and system administrators can choose to scale 'up' or 'out' by increasing the instance size, adding more instances or hosting the database in a managed database service like Amazon RDS etc. The approximate monthly cost of this setup less than $2/day.
 
 #### Basic Setup
 
 1. Start a t3.medium instance (2vCPU, 4GB RAM), open ports should be TCP 80 and TCP 22, write down the instance id
-2. Create a certificate in ACM
+2. Create a certificate in AWS Certificate Manager (ACM)
 3. Create a Target Group and add the EC2 instance using port 80 and '/test.html' for test page
 4. Create Application Load Balancer. Add a listener on port 443 that points to the Target Group created in step 3 and use the certificate in created in step 2. Add another listener in port 80 and set it to 'Redirect to...'  HTTPS, port 443
-5. Create Route53 A record an point it to the ELB alias
+5. Create an Amazon Route53 A record an point it to the ELB alias
 6. Install Apache & MySQL on the EC2 instance. 
 ```
 sudo yum update -y
@@ -59,7 +59,7 @@ vi /var/www/html/config.php
 
 #### Next Steps 
 
-1. Regularly backup your EC2 instance by using AWS Backups
+1. Regularly backup your EC2 instance by using AWS Backup
 2. Improve network security by making your existing subnet private, add a public subnet plus a NAT Gateway and reconfigure the Elastic Load Balancer to work with the newly provisioned public subnet
 
 #### Scaling and High Availability
