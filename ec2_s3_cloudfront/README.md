@@ -1,4 +1,5 @@
-# Virtual Immersion Week Lab - EC2, S3 and CloudFront
+# Highly Available Web Applications Lab
+*Compute Series - Virtual Immersion Weeks*
 
 ## Objective
 
