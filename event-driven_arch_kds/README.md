@@ -1,8 +1,9 @@
-# Virtual Immersion Week Lab - Serverless with AWS Lambda, Amazon Kinesis, Amazon SQS, and Amazon S3
+# Real-time Data Ingestion and Processing with Event-Driven Architectures
+*Compute Series - Virtual Immersion Weeks*
 
 ## Objective
 
-The objective of this lab is to give you basic hands-on experience for building serverless applications using AWS Lambda to run functions without servers, Amazon Kinesis to ingest data from a variety of sources, Amazon SQS to decouple different parts of an application, and Amazon S3 for data storage.
+The objective of this lab is to give you basic hands-on experience for building serverless, event-driven applications that allow for real-time data ingestion and processing, and its storage in Amazon S3.
 
 ## Architecture
 

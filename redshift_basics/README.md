@@ -1,4 +1,4 @@
-# Redshift lab
+# Basics of Data Warehousing using Amazon Redshift
 
 ### Objective
 

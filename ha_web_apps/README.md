@@ -3,7 +3,7 @@
 
 ## Objective
 
-The objective of this lab is to give you basic knowledge of the Amazon EC2, Amazon CloudFront and Amazon S3 services to help you deploy highly-available infrastructure that lets you serve both static and dynamic content from behind a CDN.
+The objective of this lab is to give you hands-on experience in building highly-available, scalable web applications on AWS. You will deploy a backend application onto a group of Amazon EC2 instances, store a static frontend application in Amazon S3, and will place these behind Amazon CloudFront to leverage the benefits of DDoS mitigation provided by AWS Shield.
 
 ## Architecture
 

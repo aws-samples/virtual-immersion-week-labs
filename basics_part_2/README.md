@@ -1,15 +1,12 @@
-# Networking and compute lab (module 2)
-
-<p align="center">
-</p>
+# Basics of Networking, Compute and Event-Driven Architectures (Part 2)
 
 ## Objective
 
 The objective of this lab is to help you understand how to model and implement event-driven architectures on AWS. Additionally, it should help you understand the basics of:
 
- * Load balancing in AWS using ELB and EC2 instances.
- * Creating and querying a DynamoDB table.
- * Reusing code in Lambda functions by placing it in a Lambda layer.
+ * Load balancing in AWS using Amazon ELB and Amazon EC2 instances.
+ * Creating and querying an Amazon DynamoDB table.
+ * Reusing code in AWS Lambda functions by placing it in a Lambda layer.
 
 ## Initialize your environment
 
