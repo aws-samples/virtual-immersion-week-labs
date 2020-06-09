@@ -33,7 +33,7 @@ def dump_table_to_dynamo(s3_id, data):
     table = dynamodb.Table(DYNAMODB_TABLE)
     table.put_item(
         Item={
-            's3Id': s3_id,
+            'captureId': s3_id,
             'packetData': data
         })
 
