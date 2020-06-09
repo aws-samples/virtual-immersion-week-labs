@@ -53,9 +53,6 @@ git clone https://github.com/aws-samples/virtual-immersion-week-labs.git && cd v
 ```
 bash initialize.sh
 ```
-Write down the account ID that the script prints to the terminal. _This is important and will be used in a later step._
-
-![cloud9_accountid](https://github.com/aws-samples/virtual-immersion-week-labs/raw/master/basics-part-2/img/cloud9_account_id.png "")
 
 ## Create DynamoDB table.
 
@@ -119,7 +116,7 @@ You will be taken to the Create layer screen. Since we're creating a layer for S
 
  * Type **ScapyLayer** into the _Name_ field.
  * Select _Upload a file from Amazon S3_.
- * In the _Amazon S3 link URL_ text field, enter the URL to the file within the bucket that was created for you. It is **s3://viw-lambda-ec2-lab-012345678901/scapy_layer.zip**, where 012345678901 is the account ID that you wrote down during the first steps.
+ * In the _Amazon S3 link URL_ text field, enter the URL to the file within the bucket that was created for you. It is **s3://viw-lambda-ec2-lab-012345678901/scapy_layer.zip**, where 012345678901 is the number of the AWS account that you are currently logged using.
  * From the _Compatible runtimes - optional_ dropdown, choose **Python 3.8**.
 
 Once you are done, click on the _Create_ button at the bottom right corner.

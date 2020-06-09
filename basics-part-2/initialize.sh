@@ -3,6 +3,11 @@
 AWS_REGION=`aws configure get region`
 ROLE_NAME="Cloud9-myLambdaRole"
 S3_BUCKET_PREFIX="viw-lambda-ec2-lab"
+LAB_DIRECTORY="basics-part-2"
+
+# Delete all directories not related to this lab.
+# (mindepth=1 excludes . and .., maxdepth=1 excludes subdirectories.)
+find -mindepth 1 -maxdepth 1 -type d ! -iname $LAB_DIRECTORY -print0 | xargs -0 rm -Rf
 
 ACCOUNTID=`aws sts get-caller-identity \
     | python -c "import json; import sys; print(json.load(sys.stdin)['Account'])"`

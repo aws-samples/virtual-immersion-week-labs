@@ -2,7 +2,7 @@
 yum update -y
 yum install -y python3 httpd mod_wsgi.x86_64 git
 cd ~ && git clone https://github.com/aws-samples/virtual-immersion-week-labs.git
-cd virtual-immersion-week-labs/lambda_ec2
+cd virtual-immersion-week-labs/basics-part-2
 cp flaskapp/vhost.conf /etc/httpd/conf.d/vhost.conf
 cd flaskapp && rm vhost.conf
 python3 -m pip install virtualenv
