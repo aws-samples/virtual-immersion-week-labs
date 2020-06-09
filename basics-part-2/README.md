@@ -46,7 +46,7 @@ cd ~/environment
 
 Then run the following git command to clone the repository:
 ```sh
-git clone https://github.com/aws-samples/virtual-immersion-week-labs.git && cd virtual-immersion-week-labs/lambda_ec2
+git clone https://github.com/aws-samples/virtual-immersion-week-labs.git && cd virtual-immersion-week-labs/basics-part-2
 ```
 
 ### 3. Run the initialization script to automatically create an S3 bucket and populate it.
@@ -69,7 +69,7 @@ At the main DynamoDB screen, click on the _Create table_ button at the center.
 
 Now you need to give the table a name and configure its settings.
  * Enter **PacketCaptures** into the _Table name_ field.
- * For the partition key, enter **s3Id** into the _Primary key_ field and leave _String_ as the type of the field.
+ * For the partition key, enter **captureId** into the _Primary key_ field and leave _String_ as the type of the field.
 
 We will use the default settings for this demo, so go ahead and click on the _Create_ button at the bottom right corner of the screen.
 
