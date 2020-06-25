@@ -367,22 +367,7 @@ Click on *Create pipeline* to start the provisioning of the pipeline.
 
 ### Create the kubectl role.
 
-The pipeline will need to impersonate a role that is given system:masters privileges in the cluster. We start by replacing the *012345678901* account number in the **kubectl-role.json** file for your current account number. The file is in the *virtual-immersion-week-labs/cicd-eks-fargate* directory in your Cloud9 environment.
-
-```
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Principal": {
-                "AWS": "arn:aws:iam::<YOUR-ACCT-NR-HERE>:role/service-role/codebuild-eks-cicd-build-pipeline-project-service-role"
-            },
-            "Action": "sts:AssumeRole"
-        }
-    ]
-}
-```
+The pipeline will need to impersonate a role that is given system:masters privileges in the cluster. We start by replacing a placeholder in the **kubectl-role.json** file with your current account number. The file is in the *virtual-immersion-week-labs/cicd-eks-fargate* directory in your Cloud9 environment.
 
 Then, we'll use the AWS CLI to create a role names **eks-cicd-lab-codebuild-kubectl-role** using the kubectl-role.json that you just modified.
 
