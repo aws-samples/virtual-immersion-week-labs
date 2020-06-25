@@ -1,13 +1,51 @@
 
+### Create a AWS Cloud9 environment
+
+Click on the Services menu at the top left corner of the screen, and enter **Cloud9** into the search bar, then click on the *Cloud9* menu item.
+
+<p align="center">
+    <img alt="cloud9_1" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/master/cicd-eks-fargate/img/cloud9_1.png" width="25%">
+</p>
+
+Click on the *Create environment* button to start creating a new environment.
+
+<p align="center">
+    <img alt="cloud9_2" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/master/cicd-eks-fargate/img/cloud9_2.png" width="55%">
+</p>
+
+Enter **MyCloud9Environment** in the *Name* field, and click on the *Next step* button to continue.
+
+<p align="center">
+    <img alt="cloud9_3" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/master/cicd-eks-fargate/img/cloud9_3.png" width="85%">
+</p>
+
+Leave the rest as it is, and click on the *Next step* button to continue.
+
+<p align="center">
+    <img alt="cloud9_4" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/master/cicd-eks-fargate/img/cloud9_4.png" width="85%">
+</p>
+
+Review the parameters and click on the *Create environment* button.
+
+<p align="center">
+    <img alt="cloud9_5" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/master/cicd-eks-fargate/img/cloud9_5.png" width="85%">
+</p>
+
+After a brief setup process, you will be taken to your newly created AWS Cloud9 environment. 
+
+<p align="center">
+    <img alt="cloud9_6" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/master/cicd-eks-fargate/img/cloud9_6.png" width="85%">
+</p>
+
 ### Download and install dependencies
+
+To get your Cloud9 environment ready to deploy the EKS cluster, you will need to download and install some additional command line tools, such as **eksctl**, **kubectl**, and **jq**.
 
 #### Download and install jq.
 
 ```
 sudo yum -y install jq
 ```
-
-Before creating the cluster, you need to install both the **kubectl** and **eksctl** command-line tools.
 
 #### Download and install kubectl
 
@@ -69,9 +107,25 @@ Click on the following [deep link](https://console.aws.amazon.com/iam/home#/role
 
 Make sure that the *AWS service* and *EC2* options are selected, then click *Next* to view permissions.
 
+<p align="center">
+    <img alt="iam_1" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/master/cicd-eks-fargate/img/iam_1.png" width="85%">
+</p>
+
 Make sure that **AdministratorAccess** is checked, then click *Next* to review.
 
+<p align="center">
+    <img alt="iam_2" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/master/cicd-eks-fargate/img/iam_2.png" width="85%">
+</p>
+
 Enter *eks-cloud9-admin* as the role name, and click *Create role*.
+
+<p align="center">
+    <img alt="iam_3" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/master/cicd-eks-fargate/img/iam_3.png" width="85%">
+</p>
+
+<p align="center">
+    <img alt="iam_4" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/master/cicd-eks-fargate/img/iam_4.png" width="85%">
+</p>
 
 #### Assign the newly created IAM role to your Cloud9 instance.
 
@@ -140,3 +194,169 @@ You should see something like this:
 NAME             TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
 svc/kubernetes   ClusterIP   10.100.0.1   <none>        443/TCP   1m
 ```
+
+Verify that two nodes have been created.
+
+```
+kubectl get nodes
+```
+
+The output should be similar to this:
+```
+NAME                                                    STATUS   ROLES    AGE    VERSION
+fargate-ip-192-168-145-249.eu-west-1.compute.internal   Ready    <none>   9m6s   v1.16.8-eks-e16311
+fargate-ip-192-168-159-100.eu-west-1.compute.internal   Ready    <none>   9m9s   v1.16.8-eks-e16311
+```
+
+Now, attach the corresponding policy to the EKS node roles 
+
+### Initialize the CDK application
+
+```
+cd ~/environment && mkdir eks-cicd-cdk
+```
+
+```
+cdk init app --language=python
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+eksctl create cluster --name eks-lab-cluster --version 1.16 --region eu-west-1 --full-ecr-access --fargate --alb-ingress-access
+
+eksctl get cluster --region eu-west-1 --name eks-lab-cluster -o yaml
+
+// vpc-086480a756972b730
+
+eksctl get fargateprofile --cluster=eks-lab-cluster
+
+NAME            SELECTOR_NAMESPACE      SELECTOR_LABELS POD_EXECUTION_ROLE_ARN                                                                          SUBNETS                                                                         TAGS
+fp-default      default                 <none>          arn:aws:iam::038821543405:role/eksctl-eks-lab-cluster-clu-FargatePodExecutionRole-67FFXR0HNW5W  subnet-0ec9ae8a112945c39,subnet-090588352a0cb3c57,subnet-00968563c33d7ab77      <none>
+fp-default      kube-system             <none>          arn:aws:iam::038821543405:role/eksctl-eks-lab-cluster-clu-FargatePodExecutionRole-67FFXR0HNW5W  subnet-0ec9ae8a112945c39,subnet-090588352a0cb3c57,subnet-00968563c33d7ab77      <none>
+
+
+eksctl utils associate-iam-oidc-provider --cluster=eks-lab-cluster --approve
+
+wget https://raw.githubusercontent.com/kubernetes-sigs/aws-alb-ingress-controller/v1.1.4/docs/examples/rbac-role.yaml
+
+wget https://raw.githubusercontent.com/kubernetes-sigs/aws-alb-ingress-controller/v1.1.4/docs/examples/alb-ingress-controller.yaml
+
+aws iam create-policy \
+    --policy-name ALBIngressControllerIAMPolicy \
+    --policy-document https://raw.githubusercontent.com/kubernetes-sigs/aws-alb-ingress-controller/v1.1.4/docs/examples/iam-policy.json
+
+
+eksctl create iamserviceaccount \
+       --cluster=attractive-gopher \
+       --namespace=kube-system \
+       --name=alb-ingress-controller \
+       --attach-policy-arn=$PolicyARN \
+       --override-existing-serviceaccounts \
+       --approve
+
+    The rbac_role manifest gives appropriate permissions to the ALB ingress controller to communicate with the EKS cluster we created earlier.
+    The ALB ingress controller creates an Ingress Controller which uses ALB.
+
+
+Before we can apply these manifests, we need to uncomment and edit the following fields in the ALB Ingress Controller manifest:
+
+    cluster-name: The name of the cluster. In this case, we will use fargate-tutorial-cluster.
+    vpc-id: VPC ID of the cluster. We saw how to access this field in the section above.
+    aws-region: The region for your EKS cluster.
+    AWS_ACCESS_KEY_ID: The AWS access key id that ALB controller can use to communicate with AWS. For this tutorial, we will add the access key in plaintext in the file. However, for a production setup, it is recommended to use a project like kube2iam for providing IAM Access.
+    AWS_SECRET_ACCESS_KEY: The AWS secret access key id that ALB controller can use to communicate with AWS. For this tutorial, we will add the access key in plaintext in the file. However, for a production setup, it is recommended to use a project like kube2iam for providing IAM Access.
+
+
+eksctl create iamserviceaccount \
+       --cluster=eks-lab-cluster \
+       --namespace=kube-system \
+       --name=alb-ingress-controller \
+       --attach-policy-arn=arn:aws:iam::038821543405:policy/ALBIngressControllerIAMPolicy \
+       --override-existing-serviceaccounts \
+       --approve
+
+kubectl apply -f alb-ingress-controller.yaml
+
+kubectl logs -n kube-system $(kubectl get po -n kube-system | egrep -o alb-ingress[a-zA-Z0-9-]+)
+
+## Prepare the app
+
+aws ecr create-repository --repository-name=eks-lab-ecr-repo
+
+```
+{
+    "repository": {
+        "repositoryArn": "arn:aws:ecr:eu-west-1:038821543405:repository/eks-lab-ecr-repo",
+        "registryId": "038821543405",
+        "repositoryName": "eks-lab-ecr-repo",
+        "repositoryUri": "038821543405.dkr.ecr.eu-west-1.amazonaws.com/eks-lab-ecr-repo",
+        "createdAt": 1593021726.0,
+        "imageTagMutability": "MUTABLE",
+        "imageScanningConfiguration": {
+            "scanOnPush": false
+        }
+    }
+}
+```
+
+aws codecommit create-repository --repository-name=eks-lab-repo
+
+cd ~/environment && git clone --bare https://github.com/alexwhen/docker-2048.git
+
+git push --mirror https://git-codecommit.eu-west-1.amazonaws.com/v1/repos/eks-lab-repo
+
+```
+{
+    "repositoryMetadata": {
+        "accountId": "038821543405",
+        "repositoryId": "575c7028-a7f1-4935-a289-a1b9357d394c",
+        "repositoryName": "eks-lab-repo",
+        "lastModifiedDate": 1593020629.808,
+        "creationDate": 1593020629.808,
+        "cloneUrlHttp": "https://git-codecommit.eu-west-1.amazonaws.com/v1/repos/eks-lab-repo",
+        "cloneUrlSsh": "ssh://git-codecommit.eu-west-1.amazonaws.com/v1/repos/eks-lab-repo",
+        "Arn": "arn:aws:codecommit:eu-west-1:038821543405:eks-lab-repo"
+    }
+}
+```
+
+cd ~/environment && rm -Rf docker-2048.git
+
+git clone https://git-codecommit.eu-west-1.amazonaws.com/v1/repos/eks-lab-repo
+
+### Create the namespace and the service.
+
+kubectl apply -f 2048-game-namespace.yaml
+kubectl apply -f 2048-game-service.yaml
+
+### Create the buildspec.yaml file.
+
+### Create the 2048-game.yaml file.
+
+### Create the kubectl role
+
+aws iam create-role --role-name eks-lab-codebuild-kubectl-role --assume-role-policy-document file://~/environment/kubectl-role.json
+
+### Patch the aws-auth configmap with the new kubectl role.
+
+ROLE="    - rolearn: arn:aws:iam::038821543405:role/eks-lab-codebuild-kubectl-role\n      username: eks-lab-codebuild-kubectl-role\n      groups:\n        - system:masters"
+kubectl get -n kube-system configmap/aws-auth -o yaml | awk "/mapRoles: \|/{print;print \"$ROLE\";next}1" > /tmp/aws-auth-patch.yml
+kubectl patch configmap/aws-auth -n kube-system --patch "$(cat /tmp/aws-auth-patch.yml)"
+
+### Add inline policy to the CodeBuild role to asssume kubectl role and to describe EKS cluster.
+
+
+## CDK
+
+source .env/bin/activate
+pip install -r requirements.txt
