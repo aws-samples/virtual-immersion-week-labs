@@ -247,11 +247,123 @@ cd ~/environment/eks-cicd-lab-git-repo && git add . && git commit -m "Patched fi
 
 ### Create the build pipeline.
 
+#### Create the AWS odeBuild project.
 
-ECR_REPO - 687611677563.dkr.ecr.eu-west-1.amazonaws.com/eks-cicd-lab-ecr-repo
-IMAGE_NAME - 2048-game
-EKS_ROLE_ARN - arn:aws:iam::687611677563:role/eks-cicd-lab-codebuild-kubectl-role
-CLUSTER_NAME - eks-cicd-lab-cluster
+Click the *Services* menu at the top left corner of your screen and enter **CodeBuild**, then click on the AWS CodeBuild link.
+
+<p align="center">
+    <img alt="codebuild_1" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codebuild_1.png" width="25%">
+</p>
+
+Click on the *Create build project* button on the left.
+
+<p align="center">
+    <img alt="codebuild_2" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codebuild_2.png" width="25%">
+</p>
+
+In the *Project configuration* section, name your project **eks-cicd-build-pipeline-project**, and scroll down to the next section.
+
+<p align="center">
+    <img alt="codebuild_3" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codebuild_3.png" width="25%">
+</p>
+
+In the *Source* section:
+
+ * Select **AWS CodeCommit** from the *Source provider* dropdown.
+ * Select **eks-cicd-lab-git-repo** from the *Repository* dropdown.
+ * Select the **master** branch from the *Branch* dropdown.
+
+Leave the rest as is and scroll down to the next section.
+
+<p align="center">
+    <img alt="codebuild_4" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codebuild_4.png" width="25%">
+</p>
+
+In the *Environment* section, select:
+
+ * *Managed image* as the type of environment image to use.
+ * Choose **Amazon Linux 2** from the *Operating system* dropdown.
+ * Choose **Standard** from the *Runtime(s)* dropdown.
+ * Choose **aws/codebuild/amazonlinux2-x86_64-standard:3.0** from the *Image* dropdown.
+ * Choose **Always use the latest image for this runtime version** from the *Image version* dropdown.
+ * Choose **Linux** from the *Environment type* dropdown.
+ * Check the *Privileged* checkbox.
+ * Make sure all values are as depicted in the below screenshot.
+
+<p align="center">
+    <img alt="codebuild_5" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codebuild_5.png" width="25%">
+</p>
+
+Make sure you select the 3 GB memory, 2 vCPUs compute environment. Then, create four environment variables as follows:
+
+| Variable name     | Value |
+|-------------------|-------|
+| ECR_REPO          | 012345678901.dkr.ecr.eu-west-1.amazonaws.com/eks-cicd-lab-ecr-repo |
+| IMAGE_NAME        | 2048-game |
+| EKS_ROLE_ARN      | arn:aws:iam::012345678901:role/eks-cicd-lab-codebuild-kubectl-role |
+| CLUSTER_NAME      | eks-cicd-lab-cluster |
+
+Where **012345678901** is your account number.
+
+<p align="center">
+    <img alt="codebuild_6" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codebuild_6.PNG" width="25%">
+</p>
+
+Make sure the *Buildspec* section remains as is, as shown in the screenshot below.
+
+<p align="center">
+    <img alt="codebuild_7" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codebuild_7.PNG" width="25%">
+</p>
+
+Scroll down to the bottom and click on the *Create build project* button.
+
+<p align="center">
+    <img alt="codebuild_8" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codebuild_8.png" width="25%">
+</p>
+
+### Create the AWS CodePipeline pipeline.
+
+On the right sidebar, click the *Pipeline* dropdown and click on *Pipelines*. Then, click on *Create pipeline*.
+
+<p align="center">
+    <img alt="codepipeline_2" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codepipeline_2.png" width="25%">
+</p>
+
+Name your pipeline **eks-cicd-lab-pipeline**, and click on *Next*.
+
+<p align="center">
+    <img alt="codepipeline_3" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codepipeline_3.png" width="25%">
+</p>
+
+From the *Source provider* dropdown, choose **AWS CodeCommit**, then choose the **eks-cicd-lab-git-repo** repository from the *Repository name* dropdown. Then, choose the **master** branch from the *Branch name* dropdown, and click on *Next*.
+
+<p align="center">
+    <img alt="codepipeline_4" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codepipeline_4.png" width="25%">
+</p>
+
+Choose **AWS CodeBuild** from the *Build provider* dropdown, make sure the region is set to **Europe (Ireland)**, and choose the **eks-cicd-build-pipeline-project** you just created from the *Project name* search box. Click on *Next*.
+
+<p align="center">
+    <img alt="codepipeline_5" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codepipeline_5.png" width="25%">
+</p>
+
+Click on *Skip deploy stage*.
+
+<p align="center">
+    <img alt="codepipeline_6" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codepipeline_6.png" width="25%">
+</p>
+
+When presented with the dialog, click on *Skip*.
+
+<p align="center">
+    <img alt="codepipeline_7" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codepipeline_7.png" width="25%">
+</p>
+
+Click on *Create pipeline* to start the provisioning of the pipeline.
+
+<p align="center">
+    <img alt="codepipeline_8" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codepipeline_8.png" width="25%">
+</p>
 
 ### Create the kubectl role.
 
@@ -436,5 +548,45 @@ kubectl apply -f ~/environment/virtual-immersion-week-labs/cicd-eks-fargate/2048
 kubectl apply -f ~/environment/virtual-immersion-week-labs/cicd-eks-fargate/2048-k8s/2048-game-ingress.yaml
 ```
 
-
 ### Start the deployment pipeline.
+
+Make a small change in the application (which is in *~/environment/eks-cicd-lab-git-repo/2048*), e.g.: in the index.html. Then, commit the changes:
+
+```
+git add . && git commit -m "Change to trigger the pipeline."
+```
+
+Wait until the build is complete (you can monitor that from the AWS CodePipeline console), and then check the state of the pods:
+
+```
+kubectl get pods -n 2048-game
+```
+
+The result should look like this:
+```
+NAME                               READY   STATUS             RESTARTS   AGE
+2048-deployment-5895dc87c-5sxsw    0/1     Pending            0          21s
+2048-deployment-5895dc87c-924mq    0/1     Pending            0          13s
+2048-deployment-5895dc87c-958vz    1/1     Running            0          74s
+2048-deployment-5895dc87c-rfrpq    1/1     Running            0          74s
+2048-deployment-5895dc87c-zkgcn    1/1     Running            0          74s
+```
+
+Now, get the address of the ALB that sits in front of the application containers:
+
+```
+kubectl get ingress/2048-ingress -n 2048-game
+```
+
+It should look like this:
+
+```
+NAME           HOSTS   ADDRESS                                                                  PORTS   AGE
+2048-ingress   *       example.eu-west-1.elb.amazonaws.com                                      80      125m
+```
+
+Copy the address (in this case, **example.eu-west-1.elb.amazonaws.com**) into a new browser tag, and load it. If everything went well, you should see a screen like the one below:
+
+<p align="center">
+    <img alt="2048" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/2048.png" width="25%">
+</p>
