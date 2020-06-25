@@ -204,17 +204,48 @@ Then, create an AWS CodeCommit repository where we'll store the application code
 aws codecommit create-repository --repository-name=eks-cicd-lab-git-repo | jq -r .repositoryMetadata.cloneUrlHttp
 ```
 
+
+
 We'll use a stripped-down version of the 2048 game available on GitHub as our test application.
 
 ```
 cd ~/environment && git clone --bare https://github.com/alexwhen/docker-2048.git
 ```
 
-
+Create a clone of the 2048 repository and push it into the AWS CodeCommit repository.
 
 ```
-cd docker-2048 && git push --mirror https://git-codecommit.eu-west-1.amazonaws.com/v1/repos/eks-cicd-lab-git-repo
+cd docker-2048.git && git push --mirror https://git-codecommit.eu-west-1.amazonaws.com/v1/repos/eks-cicd-lab-git-repo
 ```
+
+Clone the Virtual Immersion Week repository to get the application patches
+
+```
+cd ~/environment && git clone https://github.com/aws-samples/virtual-immersion-week-labs.git
+```
+
+Clone the AWS CodeCommit code repository.
+
+```
+cd ~/environment && git clone https://git-codecommit.eu-west-1.amazonaws.com/v1/repos/eks-cicd-lab-git-repo
+```
+
+Copy the patched files from the Virtual Immersion Week lab directory 
+
+```
+cp -f virtual-immersion-week-labs/cicd-eks-fargate/2048-patches/* ~/environment/eks-cicd-lab-git-repo
+```
+
+Now, the AWS CodeCommit repository contains all the files needed to configure the build pipeline. Commit the changes to the repository and push them.
+
+```
+cd ~/environment/eks-cicd-lab-git-repo && git add . && git commit -m "Patched files added." && git push
+```
+
+### Create the build pipeline.
+
+
+
 
 When complete, test that your **kubectl** configuration is correct.
 
