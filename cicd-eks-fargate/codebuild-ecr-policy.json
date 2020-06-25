@@ -19,7 +19,7 @@
                 "ecr:GetRepositoryPolicy",
                 "ecr:GetLifecyclePolicy"
             ],
-            "Resource": "arn:aws:ecr:eu-west-1:<ACCOUNT_ID>:repository/eks-lab-ecr-repo"
+            "Resource": "arn:aws:ecr:eu-west-1:<ACCOUNT_ID>:repository/eks-cicd-lab-ecr-repo"
         },
         {
             "Sid": "VisualEditor1",

@@ -317,6 +317,14 @@ Now, create an IAM OIDC provider
 eksctl utils associate-iam-oidc-provider --cluster=eks-cicd-lab-cluster --approve
 ```
 
+### Create Fargate profile for 2048-game
+
+Launch the AWS Fargate profile provisioning, and continue in another Terminal window.
+
+```
+eksctl create fargateprofile --cluster eks-cicd-lab-cluster --region eu-west-1 --name cicd-lab-fargate-profile --namespace 2048-game
+```
+
 #### Configure the ALB Ingress Provider
 
 The rbac_role manifest gives appropriate permissions to the ALB ingress controller to communicate with the EKS cluster we created earlier.
@@ -393,34 +401,36 @@ kubectl get -n kube-system configmap/aws-auth -o yaml | awk "/mapRoles: \|/{prin
 kubectl patch configmap/aws-auth -n kube-system --patch "$(cat /tmp/aws-auth-patch.yml)"
 ```
 
+#### Add an inline policy to allow AWS CodeBuild to push and pull images from our Amazon ECR repository.
 
-cd ~/environment && rm -Rf docker-2048.git
+```
+aws iam put-role-policy \
+    --role-name codebuild-eks-cicd-build-pipeline-project-service-role \
+    --policy-name CodeBuildEcrPolicy \
+    --policy-document "$(cat ~/environment/virtual-immersion-week-labs/cicd-eks-fargate/codebuild-ecr-policy.json | sed s/\<ACCOUNT_ID\>/$AWS_ACCOUNT_ID/g)"
+```
+#### Add an inline policy to allow AWS CodeBuild to manage the cluster using kubectl.
 
-git clone https://git-codecommit.eu-west-1.amazonaws.com/v1/repos/eks-lab-repo
+```
+aws iam put-role-policy \
+    --role-name codebuild-eks-cicd-build-pipeline-project-service-role \
+    --policy-name CodeBuildEksPolicy \
+    --policy-document "$(cat ~/environment/virtual-immersion-week-labs/cicd-eks-fargate/codebuild-eks-policy.json | sed s/\<ACCOUNT_ID\>/$AWS_ACCOUNT_ID/g)"
+```
 
 ### Create the namespace and the service.
 
-kubectl apply -f 2048-game-namespace.yaml
-kubectl apply -f 2048-game-service.yaml
+```
+kubectl apply -f ~/environment/virtual-immersion-week-labs/cicd-eks-fargate/2048-k8s/2048-game-namespace.yaml
+```
 
-### Create the buildspec.yaml file.
+```
+kubectl apply -f ~/environment/virtual-immersion-week-labs/cicd-eks-fargate/2048-k8s/2048-game-service.yaml
+```
 
-### Create the 2048-game.yaml file.
-
-### Create the kubectl role
-
-aws iam create-role --role-name eks-lab-codebuild-kubectl-role --assume-role-policy-document file://~/environment/kubectl-role.json
-
-### Patch the aws-auth configmap with the new kubectl role.
-
-ROLE="    - rolearn: arn:aws:iam::038821543405:role/eks-lab-codebuild-kubectl-role\n      username: eks-lab-codebuild-kubectl-role\n      groups:\n        - system:masters"
-kubectl get -n kube-system configmap/aws-auth -o yaml | awk "/mapRoles: \|/{print;print \"$ROLE\";next}1" > /tmp/aws-auth-patch.yml
-kubectl patch configmap/aws-auth -n kube-system --patch "$(cat /tmp/aws-auth-patch.yml)"
-
-### Add inline policy to the CodeBuild role to asssume kubectl role and to describe EKS cluster.
+```
+kubectl apply -f ~/environment/virtual-immersion-week-labs/cicd-eks-fargate/2048-k8s/2048-game-ingress.yaml
+```
 
 
-## CDK
-
-source .env/bin/activate
-pip install -r requirements.txt
+### Start the deployment pipeline.

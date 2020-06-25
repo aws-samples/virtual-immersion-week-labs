@@ -12,10 +12,10 @@
                 "eks:DescribeCluster"
             ],
             "Resource": [
-                "arn:aws:iam::<ACCOUNT_ID>:role/arn:aws:iam::<ACCOUNT_ID>:role/eks-lab-codebuild-kubectl-role",
-                "arn:aws:eks:eu-west-1:<ACCOUNT_ID>:nodegroup/eks-lab-cluster/*/*",
-                "arn:aws:eks:eu-west-1:<ACCOUNT_ID>:fargateprofile/eks-lab-cluster/*/*",
-                "arn:aws:eks:eu-west-1:<ACCOUNT_ID>:cluster/eks-lab-cluster"
+                "arn:aws:iam::<ACCOUNT_ID>:role/arn:aws:iam::<ACCOUNT_ID>:role/eks-cicd-lab-codebuild-kubectl-role",
+                "arn:aws:eks:eu-west-1:<ACCOUNT_ID>:nodegroup/eks-cicd-lab-cluster/*/*",
+                "arn:aws:eks:eu-west-1:<ACCOUNT_ID>:fargateprofile/eks-cicd-lab-cluster/*/*",
+                "arn:aws:eks:eu-west-1:<ACCOUNT_ID>:cluster/eks-cicd-lab-cluster"
             ]
         }
     ]
