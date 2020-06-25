@@ -245,9 +245,41 @@ cd ~/environment/eks-cicd-lab-git-repo && git add . && git commit -m "Patched fi
 ### Create the build pipeline.
 
 
+ECR_REPO - 687611677563.dkr.ecr.eu-west-1.amazonaws.com/eks-cicd-lab-ecr-repo
+IMAGE_NAME - 2048-game
+EKS_ROLE_ARN - arn:aws:iam::687611677563:role/eks-cicd-lab-codebuild-kubectl-role
+CLUSTER_NAME - eks-cicd-lab-cluster
 
+### Create the kubectl role.
 
-When complete, test that your **kubectl** configuration is correct.
+The pipeline will need to impersonate a role that is given system:masters privileges in the cluster. We start by replacing the *012345678901* account number in the **kubectl-role.json** file for your current account number. The file is in the *virtual-immersion-week-labs/cicd-eks-fargate* directory in your Cloud9 environment.
+
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "arn:aws:iam::<YOUR-ACCT-NR-HERE>:role/service-role/codebuild-eks-cicd-build-pipeline-project-service-role"
+            },
+            "Action": "sts:AssumeRole"
+        }
+    ]
+}
+```
+
+Then, we'll use the AWS CLI to create a role names **eks-cicd-lab-codebuild-kubectl-role** using the kubectl-role.json that you just modified.
+
+```
+aws iam create-role --role-name eks-cicd-lab-codebuild-kubectl-role --assume-role-policy-document file://~/environment/virtual-immersion-week-labs/cicd-eks-fargate/kubectl-role.json
+```
+
+### Check whether the cluster has already been created.
+
+Your cluster should have already been provisioned for you by now. It is time to check whether it is ready to be configured.
+
+Test that your **kubectl** configuration is correct.
 
 ```
 kubectl get svc
@@ -276,128 +308,91 @@ fargate-ip-192-168-159-100.eu-west-1.compute.internal   Ready    <none>   9m9s  
 Get the VPC ID of the newly created cluster. You will need this value to configure the ALB Ingress Controller.
 
 ```
-eksctl get cluster --region eu-west-1 --name eks-lab-cluster -o json | jq -r .[0].ResourcesVpcConfig.VpcId
+eksctl get cluster --region eu-west-1 --name eks-cicd-lab-cluster -o json | jq -r .[0].ResourcesVpcConfig.VpcId
 ```
 
 Now, create an IAM OIDC provider
 
 ```
-eksctl utils associate-iam-oidc-provider --cluster=eks-lab-cluster --approve
+eksctl utils associate-iam-oidc-provider --cluster=eks-cicd-lab-cluster --approve
 ```
 
 #### Configure the ALB Ingress Provider
+
+The rbac_role manifest gives appropriate permissions to the ALB ingress controller to communicate with the EKS cluster we created earlier.
 
 ```
 kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/aws-alb-ingress-controller/v1.1.4/docs/examples/rbac-role.yaml
 ```
 
-wget https://raw.githubusercontent.com/kubernetes-sigs/aws-alb-ingress-controller/v1.1.4/docs/examples/alb-ingress-controller.yaml
-
-Open the **alb-ingress-controller.yaml** in a Cloud9 tab, and change uncomment the following lines:
-
 ```
+cd ~/environment && wget https://raw.githubusercontent.com/kubernetes-sigs/aws-alb-ingress-controller/v1.1.4/docs/examples/alb-ingress-controller.yaml
 ```
 
+Open the **alb-ingress-controller.yaml** in a Cloud9 tab, and change the following lines to look like these:
 
+```
+            # Setting the ingress-class flag below ensures that only ingress resources with the
+            # annotation kubernetes.io/ingress.class: "alb" are respected by the controller. You may
+            # choose any class you'd like for this controller to respect.
+            - --ingress-class=alb
 
+            # REQUIRED
+            # Name of your cluster. Used when naming resources created
+            # by the ALB Ingress Controller, providing distinction between
+            # clusters.
+            - --cluster-name=eks-cicd-lab-cluster
 
-eksctl create cluster --name eks-lab-cluster --version 1.16 --region eu-west-1 --full-ecr-access --fargate --alb-ingress-access
+            # AWS VPC ID this ingress controller will use to create AWS resources.
+            # If unspecified, it will be discovered from ec2metadata.
+            - --aws-vpc-id=vpc-0acf523383430c8a0
 
-eksctl get cluster --region eu-west-1 --name eks-lab-cluster -o yaml
+            # AWS region this ingress controller will operate in.
+            # If unspecified, it will be discovered from ec2metadata.
+            # List of regions: http://docs.aws.amazon.com/general/latest/gr/rande.html#vpc_region
+            - --aws-region=eu-west-1
+```
 
-// vpc-086480a756972b730
+The *--aws-vpc-id* value should be set to the cluster VPC that you obtained earlier.
 
-eksctl get fargateprofile --cluster=eks-lab-cluster
+Create an IAM Policy for the ALB Ingress Controller, so that it is able to create AWS resources on its own. Take note of the 
 
-NAME            SELECTOR_NAMESPACE      SELECTOR_LABELS POD_EXECUTION_ROLE_ARN                                                                          SUBNETS                                                                         TAGS
-fp-default      default                 <none>          arn:aws:iam::038821543405:role/eksctl-eks-lab-cluster-clu-FargatePodExecutionRole-67FFXR0HNW5W  subnet-0ec9ae8a112945c39,subnet-090588352a0cb3c57,subnet-00968563c33d7ab77      <none>
-fp-default      kube-system             <none>          arn:aws:iam::038821543405:role/eksctl-eks-lab-cluster-clu-FargatePodExecutionRole-67FFXR0HNW5W  subnet-0ec9ae8a112945c39,subnet-090588352a0cb3c57,subnet-00968563c33d7ab77      <none>
+```
+POLICY_ARN=$(aws iam create-policy \
+    --policy-name ALBIngressControllerIAMPolicy
+    --policy-document https://raw.githubusercontent.com/kubernetes-sigs/aws-alb-ingress-controller/v1.1.4/docs/examples/iam-policy.json \
+    | jq -r .Policy.Arn) 
+```
 
+Create an IAM service account.
 
-eksctl utils associate-iam-oidc-provider --cluster=eks-lab-cluster --approve
-
-wget https://raw.githubusercontent.com/kubernetes-sigs/aws-alb-ingress-controller/v1.1.4/docs/examples/rbac-role.yaml
-
-wget https://raw.githubusercontent.com/kubernetes-sigs/aws-alb-ingress-controller/v1.1.4/docs/examples/alb-ingress-controller.yaml
-
-aws iam create-policy \
-    --policy-name ALBIngressControllerIAMPolicy \
-    --policy-document https://raw.githubusercontent.com/kubernetes-sigs/aws-alb-ingress-controller/v1.1.4/docs/examples/iam-policy.json
-
-
+```
 eksctl create iamserviceaccount \
-       --cluster=attractive-gopher \
+       --cluster=eks-cicd-lab-cluster \
        --namespace=kube-system \
        --name=alb-ingress-controller \
-       --attach-policy-arn=$PolicyARN \
+       --attach-policy-arn=$POLICY_ARN \
        --override-existing-serviceaccounts \
        --approve
+```
 
-    The rbac_role manifest gives appropriate permissions to the ALB ingress controller to communicate with the EKS cluster we created earlier.
-    The ALB ingress controller creates an Ingress Controller which uses ALB.
-
-
-Before we can apply these manifests, we need to uncomment and edit the following fields in the ALB Ingress Controller manifest:
-
-    cluster-name: The name of the cluster. In this case, we will use fargate-tutorial-cluster.
-    vpc-id: VPC ID of the cluster. We saw how to access this field in the section above.
-    aws-region: The region for your EKS cluster.
-    AWS_ACCESS_KEY_ID: The AWS access key id that ALB controller can use to communicate with AWS. For this tutorial, we will add the access key in plaintext in the file. However, for a production setup, it is recommended to use a project like kube2iam for providing IAM Access.
-    AWS_SECRET_ACCESS_KEY: The AWS secret access key id that ALB controller can use to communicate with AWS. For this tutorial, we will add the access key in plaintext in the file. However, for a production setup, it is recommended to use a project like kube2iam for providing IAM Access.
-
-
-eksctl create iamserviceaccount \
-       --cluster=eks-lab-cluster \
-       --namespace=kube-system \
-       --name=alb-ingress-controller \
-       --attach-policy-arn=arn:aws:iam::038821543405:policy/ALBIngressControllerIAMPolicy \
-       --override-existing-serviceaccounts \
-       --approve
-
+```
 kubectl apply -f alb-ingress-controller.yaml
+```
 
+```
 kubectl logs -n kube-system $(kubectl get po -n kube-system | egrep -o alb-ingress[a-zA-Z0-9-]+)
-
-## Prepare the app
-
-aws ecr create-repository --repository-name=eks-cicd-lab-ecr-repo
-
-```
-{
-    "repository": {
-        "repositoryArn": "arn:aws:ecr:eu-west-1:038821543405:repository/eks-lab-ecr-repo",
-        "registryId": "038821543405",
-        "repositoryName": "eks-lab-ecr-repo",
-        "repositoryUri": "038821543405.dkr.ecr.eu-west-1.amazonaws.com/eks-lab-ecr-repo",
-        "createdAt": 1593021726.0,
-        "imageTagMutability": "MUTABLE",
-        "imageScanningConfiguration": {
-            "scanOnPush": false
-        }
-    }
-}
 ```
 
-aws codecommit create-repository --repository-name=eks-lab-repo
-
-cd ~/environment && git clone --bare https://github.com/alexwhen/docker-2048.git
-
-git push --mirror https://git-codecommit.eu-west-1.amazonaws.com/v1/repos/eks-lab-repo
+#### Add the kubectl role to the authorized AWS roles.
 
 ```
-{
-    "repositoryMetadata": {
-        "accountId": "038821543405",
-        "repositoryId": "575c7028-a7f1-4935-a289-a1b9357d394c",
-        "repositoryName": "eks-lab-repo",
-        "lastModifiedDate": 1593020629.808,
-        "creationDate": 1593020629.808,
-        "cloneUrlHttp": "https://git-codecommit.eu-west-1.amazonaws.com/v1/repos/eks-lab-repo",
-        "cloneUrlSsh": "ssh://git-codecommit.eu-west-1.amazonaws.com/v1/repos/eks-lab-repo",
-        "Arn": "arn:aws:codecommit:eu-west-1:038821543405:eks-lab-repo"
-    }
-}
+AWS_ACCOUNT_ID=$(aws sts get-caller-identity | jq -r .Account)
+ROLE="    - rolearn: arn:aws:iam::$AWS_ACCOUNT_ID:role/eks-cicd-lab-codebuild-kubectl-role\n      username: eks-cicd-lab-codebuild-kubectl-role\n      groups:\n        - system:masters"
+kubectl get -n kube-system configmap/aws-auth -o yaml | awk "/mapRoles: \|/{print;print \"$ROLE\";next}1" > /tmp/aws-auth-patch.yml
+kubectl patch configmap/aws-auth -n kube-system --patch "$(cat /tmp/aws-auth-patch.yml)"
 ```
+
 
 cd ~/environment && rm -Rf docker-2048.git
 
