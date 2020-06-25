@@ -1,5 +1,10 @@
 ## Deploying applications to Amazon EKS and AWS Fargate with a CI/CD pipeline based on AWS CodeBuild.
 
+
+### Before you begin
+
+Please make sure that you are working within the region that your instructor has told you to. Failure to do so could result in the laboratory not working as expected.
+
 ### Create a AWS Cloud9 environment
 
 Click on the Services menu at the top left corner of the screen, and enter **Cloud9** into the search bar, then click on the *Cloud9* menu item.
@@ -187,7 +192,7 @@ The next step is to create the EKS cluster where we will be deploying our applic
 eksctl create cluster --name eks-cicd-lab-cluster --version 1.16 --region eu-west-1 --full-ecr-access --fargate --alb-ingress-access
 ```
 
-Cluster provisioning takes approximately between 10-15 minutes.
+Cluster provisioning takes approximately between 10-15 minutes. In the meantime, it is recommended that you proceed with instructions below.
 
 ### Prepare your application for deployment.
 
@@ -258,13 +263,13 @@ Click the *Services* menu at the top left corner of your screen and enter **Code
 Click on the *Create build project* button on the left.
 
 <p align="center">
-    <img alt="codebuild_2" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codebuild_2.png" width="25%">
+    <img alt="codebuild_2" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codebuild_2.png" width="85%">
 </p>
 
 In the *Project configuration* section, name your project **eks-cicd-build-pipeline-project**, and scroll down to the next section.
 
 <p align="center">
-    <img alt="codebuild_3" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codebuild_3.png" width="25%">
+    <img alt="codebuild_3" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codebuild_3.png" width="85%">
 </p>
 
 In the *Source* section:
@@ -276,7 +281,7 @@ In the *Source* section:
 Leave the rest as is and scroll down to the next section.
 
 <p align="center">
-    <img alt="codebuild_4" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codebuild_4.png" width="25%">
+    <img alt="codebuild_4" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codebuild_4.png" width="85%">
 </p>
 
 In the *Environment* section, select:
@@ -291,10 +296,10 @@ In the *Environment* section, select:
  * Make sure all values are as depicted in the below screenshot.
 
 <p align="center">
-    <img alt="codebuild_5" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codebuild_5.png" width="25%">
+    <img alt="codebuild_5" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codebuild_5.png" width="85%">
 </p>
 
-Make sure you select the 3 GB memory, 2 vCPUs compute environment. Then, create four environment variables as follows:
+Expand the *Additional Configuration Section*, and make sure you select the 3 GB memory, 2 vCPUs compute environment. Then, create four environment variables as follows:
 
 | Variable name     | Value |
 |-------------------|-------|
@@ -306,19 +311,19 @@ Make sure you select the 3 GB memory, 2 vCPUs compute environment. Then, create 
 Where **012345678901** is your account number.
 
 <p align="center">
-    <img alt="codebuild_6" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codebuild_6.PNG" width="25%">
+    <img alt="codebuild_6" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codebuild_6.PNG" width="85%">
 </p>
 
 Make sure the *Buildspec* section remains as is, as shown in the screenshot below.
 
 <p align="center">
-    <img alt="codebuild_7" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codebuild_7.PNG" width="25%">
+    <img alt="codebuild_7" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codebuild_7.PNG" width="85%">
 </p>
 
 Scroll down to the bottom and click on the *Create build project* button.
 
 <p align="center">
-    <img alt="codebuild_8" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codebuild_8.png" width="25%">
+    <img alt="codebuild_8" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codebuild_8.png" width="85%">
 </p>
 
 ### Create the AWS CodePipeline pipeline.
@@ -326,43 +331,43 @@ Scroll down to the bottom and click on the *Create build project* button.
 On the right sidebar, click the *Pipeline* dropdown and click on *Pipelines*. Then, click on *Create pipeline*.
 
 <p align="center">
-    <img alt="codepipeline_2" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codepipeline_2.png" width="25%">
+    <img alt="codepipeline_2" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codepipeline_2.png" width="85%">
 </p>
 
 Name your pipeline **eks-cicd-lab-pipeline**, and click on *Next*.
 
 <p align="center">
-    <img alt="codepipeline_3" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codepipeline_3.png" width="25%">
+    <img alt="codepipeline_3" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codepipeline_3.png" width="85%">
 </p>
 
 From the *Source provider* dropdown, choose **AWS CodeCommit**, then choose the **eks-cicd-lab-git-repo** repository from the *Repository name* dropdown. Then, choose the **master** branch from the *Branch name* dropdown, and click on *Next*.
 
 <p align="center">
-    <img alt="codepipeline_4" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codepipeline_4.png" width="25%">
+    <img alt="codepipeline_4" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codepipeline_4.png" width="85%">
 </p>
 
 Choose **AWS CodeBuild** from the *Build provider* dropdown, make sure the region is set to **Europe (Ireland)**, and choose the **eks-cicd-build-pipeline-project** you just created from the *Project name* search box. Click on *Next*.
 
 <p align="center">
-    <img alt="codepipeline_5" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codepipeline_5.png" width="25%">
+    <img alt="codepipeline_5" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codepipeline_5.png" width="85%">
 </p>
 
 Click on *Skip deploy stage*.
 
 <p align="center">
-    <img alt="codepipeline_6" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codepipeline_6.png" width="25%">
+    <img alt="codepipeline_6" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codepipeline_6.png" width="85%">
 </p>
 
 When presented with the dialog, click on *Skip*.
 
 <p align="center">
-    <img alt="codepipeline_7" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codepipeline_7.png" width="25%">
+    <img alt="codepipeline_7" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codepipeline_7.png" width="85%">
 </p>
 
 Click on *Create pipeline* to start the provisioning of the pipeline.
 
 <p align="center">
-    <img alt="codepipeline_8" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codepipeline_8.png" width="25%">
+    <img alt="codepipeline_8" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codepipeline_8.png" width="85%">
 </p>
 
 ### Create the kubectl role.
@@ -468,7 +473,7 @@ Create an IAM Policy for the ALB Ingress Controller, so that it is able to creat
 
 ```
 POLICY_ARN=$(aws iam create-policy \
-    --policy-name ALBIngressControllerIAMPolicy
+    --policy-name ALBIngressControllerIAMPolicy \
     --policy-document https://raw.githubusercontent.com/kubernetes-sigs/aws-alb-ingress-controller/v1.1.4/docs/examples/iam-policy.json \
     | jq -r .Policy.Arn) 
 ```
@@ -538,7 +543,7 @@ kubectl apply -f ~/environment/virtual-immersion-week-labs/cicd-eks-fargate/2048
 Make a small change in the application (which is in *~/environment/eks-cicd-lab-git-repo/2048*), e.g.: in the index.html. Then, commit the changes:
 
 ```
-git add . && git commit -m "Change to trigger the pipeline."
+cd ~/environment/eks-cicd-lab-git-repo && git add . && git commit -m "Change to trigger the pipeline." && git push
 ```
 
 Wait until the build is complete (you can monitor that from the AWS CodePipeline console), and then check the state of the pods:
