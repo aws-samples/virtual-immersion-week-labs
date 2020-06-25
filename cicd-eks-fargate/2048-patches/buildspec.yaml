@@ -1,0 +1,32 @@
+version: 0.2
+phases:
+  install:
+    commands:
+      - curl -sS -o aws-iam-authenticator https://amazon-eks.s3.us-west-2.amazonaws.com/1.16.8/2020-04-16/bin/linux/amd64/aws-iam-authenticator
+      - curl -sS -o kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.16.8/2020-04-16/bin/linux/amd64/kubectl
+      - chmod +x ./kubectl ./aws-iam-authenticator
+      - export PATH=$PWD/:$PATH
+      - yum -y update
+      - yum -y install jq
+  pre_build:
+    commands:
+      - export AWS_REGION=eu-west-1
+      - export IMAGE_TAG=build-`echo build-$CODEBUILD_BUILD_ID | awk -F":" '{print $2}'`
+      - export KUBECONFIG=$HOME/.kube/config
+      - $(aws ecr get-login --no-include-email)
+      - aws eks update-kubeconfig --name $CLUSTER_NAME --kubeconfig $KUBECONFIG --role-arn $EKS_ROLE_ARN
+  build:
+    commands:
+      - docker build -t $IMAGE_NAME:$IMAGE_TAG .
+      - docker tag $IMAGE_NAME:$IMAGE_TAG $ECR_REPO:$IMAGE_TAG
+      - docker push $ECR_REPO:$IMAGE_TAG
+      
+  post_build:
+    commands:
+      - kubectl get nodes -n 2048-game
+      - kubectl get deployment -n 2048-game
+      - kubectl get svc -n 2048-game
+      - isDeployed=$(kubectl get deploy -o json | jq '.items[0]')
+      - envsubst < 2048-game-deployment.yaml | kubectl apply -f -
+      - kubectl get deploy -n 2048-game
+      - kubectl get svc -n 2048-game

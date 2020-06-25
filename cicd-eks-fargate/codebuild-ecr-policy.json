@@ -1,0 +1,31 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": [
+                "ecr:DescribeImageScanFindings",
+                "ecr:GetLifecyclePolicyPreview",
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:ListTagsForResource",
+                "ecr:UploadLayerPart",
+                "ecr:PutImage",
+                "ecr:BatchGetImage",
+                "ecr:CompleteLayerUpload",
+                "ecr:DescribeImages",
+                "ecr:InitiateLayerUpload",
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:GetRepositoryPolicy",
+                "ecr:GetLifecyclePolicy"
+            ],
+            "Resource": "arn:aws:ecr:eu-west-1:<ACCOUNT_ID>:repository/eks-cicd-lab-ecr-repo"
+        },
+        {
+            "Sid": "VisualEditor1",
+            "Effect": "Allow",
+            "Action": "ecr:GetAuthorizationToken",
+            "Resource": "*"
+        }
+    ]
+}
