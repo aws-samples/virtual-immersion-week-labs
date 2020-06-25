@@ -1,5 +1,13 @@
 ## Deploying applications to Amazon EKS and AWS Fargate with a CI/CD pipeline based on AWS CodeBuild.
 
+### Objective
+
+The objective of this lab is to show you how to build a simple CI/CD pipeline that deploys containerized applications to Amazon EKS by using AWS CI/CD services such as AWS CodePipeline and AWS CodeBuild.
+
+### Before you begin
+
+Please make sure that you are working within the region that your instructor has told you to. Failure to do so could result in the laboratory not working as expected.
+
 ### Create a AWS Cloud9 environment
 
 Click on the Services menu at the top left corner of the screen, and enter **Cloud9** into the search bar, then click on the *Cloud9* menu item.
@@ -62,7 +70,7 @@ Apply execute permissions to the binary.
 chmod +x ./kubectl
 ```
 
-Copy the binary to a folder in your **PATH**.
+Move the binary to a folder in your **PATH**.
 
 ```
 sudo mv kubectl /usr/local/bin
@@ -74,35 +82,27 @@ Test your recently installed version of **kubectl**.
 kubectl version --short --client
 ```
 
-#### Download and install aws-iam-authenticator
-
-```
-curl -o aws-iam-authenticator https://amazon-eks.s3.us-west-2.amazonaws.com/1.16.8/2020-04-16/bin/linux/amd64/aws-iam-authenticator
-```
-
-```
-chmod +x ./aws-iam-authenticator
-```
-
-```
-sudo mv aws-iam-authenticator /usr/local/bin
-```
-
 #### Download and install eksctl
+
+Download the eksctl command-line tool.
 
 ```
 curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
 ```
 
+Move the binary to a folder in your **PATH**.
+
 ```
 sudo mv /tmp/eksctl /usr/local/bin
 ```
+
+Test your recently installed version of **eksctl**.
 
 ```
 eksctl version
 ```
 
-#### Create and attach an IAM role to your Cloud9 instance.
+### Create and attach an IAM role to your Cloud9 instance.
 
 Click on the following [deep link](https://console.aws.amazon.com/iam/home#/roles$new?step=review&commonUseCase=EC2%2BEC2&selectedUseCase=EC2&policies=arn:aws:iam::aws:policy%2FAdministratorAccess) to open the IAM console and create a new role with Administrator access for your instance.
 
@@ -130,7 +130,7 @@ Enter *eks-cicd-cloud9-admin* as the role name, and click *Create role*.
     <img alt="iam_4" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/iam_4.png" width="85%">
 </p>
 
-#### Assign the newly created IAM role to your Cloud9 instance.
+### Assign the newly created IAM role to your Cloud9 instance.
 
 Click on the following [deep link](https://console.aws.amazon.com/ec2/v2/home?#Instances:tag:Name=aws-cloud9-MyCloud9Environment*;sort=desc:launchTime) to open the EC2 console and find your Cloud9 instance.
 
@@ -146,7 +146,7 @@ From the *IAM role* dropdown, select the **eks-cicd-cloud9-admin** role, and cli
     <img alt="ec2_role_2" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/ec2_role_2.png" width="85%">
 </p>
 
-#### Configure Cloud9 to use the newly assigned role.
+### Configure Cloud9 to use the newly assigned role.
 
 Click on the gear at the top right corner, then click on *AWS Settings*, and disable the *AWS managed temporary credentials* option.
 
@@ -178,7 +178,6 @@ aws iam get-instance-profile --instance-profile-name $INSTANCE_PROFILE_NAME --qu
 
 The output should be the name of the role, **eks-cicd-cloud9-admin**.
 
-
 ### Start the EKS cluster provisioning.
 
 The next step is to create the EKS cluster where we will be deploying our application. We will name the cluster **eks-cicd-lab-cluster**.
@@ -187,7 +186,7 @@ The next step is to create the EKS cluster where we will be deploying our applic
 eksctl create cluster --name eks-cicd-lab-cluster --version 1.16 --region eu-west-1 --full-ecr-access --fargate --alb-ingress-access
 ```
 
-Cluster provisioning takes approximately between 10-15 minutes.
+Cluster provisioning takes approximately between 10-15 minutes. In the meantime, it is recommended that you proceed with instructions below.
 
 ### Prepare your application for deployment.
 
@@ -204,8 +203,6 @@ Then, create an AWS CodeCommit repository where we'll store the application code
 ```
 aws codecommit create-repository --repository-name=eks-cicd-lab-git-repo | jq -r .repositoryMetadata.cloneUrlHttp
 ```
-
-
 
 We'll use a stripped-down version of the 2048 game available on GitHub as our test application.
 
@@ -258,13 +255,13 @@ Click the *Services* menu at the top left corner of your screen and enter **Code
 Click on the *Create build project* button on the left.
 
 <p align="center">
-    <img alt="codebuild_2" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codebuild_2.png" width="25%">
+    <img alt="codebuild_2" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codebuild_2.png" width="85%">
 </p>
 
 In the *Project configuration* section, name your project **eks-cicd-build-pipeline-project**, and scroll down to the next section.
 
 <p align="center">
-    <img alt="codebuild_3" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codebuild_3.png" width="25%">
+    <img alt="codebuild_3" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codebuild_3.png" width="85%">
 </p>
 
 In the *Source* section:
@@ -276,7 +273,7 @@ In the *Source* section:
 Leave the rest as is and scroll down to the next section.
 
 <p align="center">
-    <img alt="codebuild_4" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codebuild_4.png" width="25%">
+    <img alt="codebuild_4" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codebuild_4.png" width="85%">
 </p>
 
 In the *Environment* section, select:
@@ -291,10 +288,10 @@ In the *Environment* section, select:
  * Make sure all values are as depicted in the below screenshot.
 
 <p align="center">
-    <img alt="codebuild_5" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codebuild_5.png" width="25%">
+    <img alt="codebuild_5" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codebuild_5.png" width="85%">
 </p>
 
-Make sure you select the 3 GB memory, 2 vCPUs compute environment. Then, create four environment variables as follows:
+Expand the *Additional Configuration Section*, and make sure you select the 3 GB memory, 2 vCPUs compute environment. Then, create four environment variables as follows:
 
 | Variable name     | Value |
 |-------------------|-------|
@@ -306,19 +303,19 @@ Make sure you select the 3 GB memory, 2 vCPUs compute environment. Then, create 
 Where **012345678901** is your account number.
 
 <p align="center">
-    <img alt="codebuild_6" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codebuild_6.PNG" width="25%">
+    <img alt="codebuild_6" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codebuild_6.PNG" width="85%">
 </p>
 
 Make sure the *Buildspec* section remains as is, as shown in the screenshot below.
 
 <p align="center">
-    <img alt="codebuild_7" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codebuild_7.PNG" width="25%">
+    <img alt="codebuild_7" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codebuild_7.PNG" width="85%">
 </p>
 
 Scroll down to the bottom and click on the *Create build project* button.
 
 <p align="center">
-    <img alt="codebuild_8" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codebuild_8.png" width="25%">
+    <img alt="codebuild_8" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codebuild_8.png" width="85%">
 </p>
 
 ### Create the AWS CodePipeline pipeline.
@@ -326,50 +323,48 @@ Scroll down to the bottom and click on the *Create build project* button.
 On the right sidebar, click the *Pipeline* dropdown and click on *Pipelines*. Then, click on *Create pipeline*.
 
 <p align="center">
-    <img alt="codepipeline_2" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codepipeline_2.png" width="25%">
+    <img alt="codepipeline_2" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codepipeline_2.png" width="85%">
 </p>
 
 Name your pipeline **eks-cicd-lab-pipeline**, and click on *Next*.
 
 <p align="center">
-    <img alt="codepipeline_3" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codepipeline_3.png" width="25%">
+    <img alt="codepipeline_3" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codepipeline_3.png" width="85%">
 </p>
 
 From the *Source provider* dropdown, choose **AWS CodeCommit**, then choose the **eks-cicd-lab-git-repo** repository from the *Repository name* dropdown. Then, choose the **master** branch from the *Branch name* dropdown, and click on *Next*.
 
 <p align="center">
-    <img alt="codepipeline_4" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codepipeline_4.png" width="25%">
+    <img alt="codepipeline_4" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codepipeline_4.png" width="85%">
 </p>
 
 Choose **AWS CodeBuild** from the *Build provider* dropdown, make sure the region is set to **Europe (Ireland)**, and choose the **eks-cicd-build-pipeline-project** you just created from the *Project name* search box. Click on *Next*.
 
 <p align="center">
-    <img alt="codepipeline_5" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codepipeline_5.png" width="25%">
+    <img alt="codepipeline_5" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codepipeline_5.png" width="85%">
 </p>
 
 Click on *Skip deploy stage*.
 
 <p align="center">
-    <img alt="codepipeline_6" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codepipeline_6.png" width="25%">
+    <img alt="codepipeline_6" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codepipeline_6.png" width="85%">
 </p>
 
 When presented with the dialog, click on *Skip*.
 
 <p align="center">
-    <img alt="codepipeline_7" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codepipeline_7.png" width="25%">
+    <img alt="codepipeline_7" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codepipeline_7.png" width="85%">
 </p>
 
 Click on *Create pipeline* to start the provisioning of the pipeline.
 
 <p align="center">
-    <img alt="codepipeline_8" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codepipeline_8.png" width="25%">
+    <img alt="codepipeline_8" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codepipeline_8.png" width="85%">
 </p>
 
 ### Create the kubectl role.
 
-The pipeline will need to impersonate a role that is given system:masters privileges in the cluster. We start by replacing a placeholder in the **kubectl-role.json** file with your current account number. The file is in the *virtual-immersion-week-labs/cicd-eks-fargate* directory in your Cloud9 environment.
-
-Then, we'll use the AWS CLI to create a role names **eks-cicd-lab-codebuild-kubectl-role** using the kubectl-role.json that you just modified.
+The pipeline will need to impersonate a role that is given system:masters privileges in the cluster. We start by replacing a placeholder in the **kubectl-role.json** file with your current account number, and creating the role using the AWS CLI and the patched file. The file is in the *virtual-immersion-week-labs/cicd-eks-fargate* directory in your Cloud9 environment. The role will be named **eks-cicd-lab-codebuild-kubectl-role**.
 
 ```
 AWS_ACCOUNT_ID=$(aws sts get-caller-identity | jq -r .Account)
@@ -426,7 +421,7 @@ Launch the AWS Fargate profile provisioning, and continue in another Terminal wi
 eksctl create fargateprofile --cluster eks-cicd-lab-cluster --region eu-west-1 --name cicd-lab-fargate-profile --namespace 2048-game
 ```
 
-#### Configure the ALB Ingress Provider
+### Configure the ALB Ingress Provider
 
 The rbac_role manifest gives appropriate permissions to the ALB ingress controller to communicate with the EKS cluster we created earlier.
 
@@ -468,7 +463,7 @@ Create an IAM Policy for the ALB Ingress Controller, so that it is able to creat
 
 ```
 POLICY_ARN=$(aws iam create-policy \
-    --policy-name ALBIngressControllerIAMPolicy
+    --policy-name ALBIngressControllerIAMPolicy \
     --policy-document https://raw.githubusercontent.com/kubernetes-sigs/aws-alb-ingress-controller/v1.1.4/docs/examples/iam-policy.json \
     | jq -r .Policy.Arn) 
 ```
@@ -521,13 +516,19 @@ aws iam put-role-policy \
 
 ### Create the namespace and the service.
 
+First, create the **2048-game** namespace in Kubernetes. Our application pods will be placed into that namespace.
+
 ```
 kubectl apply -f ~/environment/virtual-immersion-week-labs/cicd-eks-fargate/2048-k8s/2048-game-namespace.yaml
 ```
 
+Then, create a service for our application.
+
 ```
 kubectl apply -f ~/environment/virtual-immersion-week-labs/cicd-eks-fargate/2048-k8s/2048-game-service.yaml
 ```
+
+And create an ingress for our application, so that it can be reached from the outside through an ALB.
 
 ```
 kubectl apply -f ~/environment/virtual-immersion-week-labs/cicd-eks-fargate/2048-k8s/2048-game-ingress.yaml
@@ -538,7 +539,7 @@ kubectl apply -f ~/environment/virtual-immersion-week-labs/cicd-eks-fargate/2048
 Make a small change in the application (which is in *~/environment/eks-cicd-lab-git-repo/2048*), e.g.: in the index.html. Then, commit the changes:
 
 ```
-git add . && git commit -m "Change to trigger the pipeline."
+cd ~/environment/eks-cicd-lab-git-repo && git add . && git commit -m "Change to trigger the pipeline." && git push
 ```
 
 Wait until the build is complete (you can monitor that from the AWS CodePipeline console), and then check the state of the pods:
@@ -556,6 +557,8 @@ NAME                               READY   STATUS             RESTARTS   AGE
 2048-deployment-5895dc87c-rfrpq    1/1     Running            0          74s
 2048-deployment-5895dc87c-zkgcn    1/1     Running            0          74s
 ```
+
+If you do not wait until pods reach the **Running** status, your ALB will return an HTTP 503 error. If your pods take more than two to three minutes to run, you may have forgotten to create the Fargate profile for the **2048-game** namespace, or you may have mistyped the namespace.
 
 Now, get the address of the ALB that sits in front of the application containers:
 
@@ -575,3 +578,5 @@ Copy the address (in this case, **example.eu-west-1.elb.amazonaws.com**) into a 
 <p align="center">
     <img alt="2048" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/2048.png" width="25%">
 </p>
+
+In case you see this screen, you have successfully completed the lab. Congratulations!
