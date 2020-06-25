@@ -58,22 +58,12 @@ sudo yum -y install jq
 
 #### Download and install kubectl
 
-Download the Amazon EKS-vended **kubectl** binary.
+Download and install the Amazon EKS-vended **kubectl** binary.
 
 ```
-curl -o kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.16.8/2020-04-16/bin/linux/amd64/kubectl
-```
-
-Apply execute permissions to the binary.
-
-```
-chmod +x ./kubectl
-```
-
-Move the binary to a folder in your **PATH**.
-
-```
-sudo mv kubectl /usr/local/bin
+curl -o kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.16.8/2020-04-16/bin/linux/amd64/kubectl \
+    && chmod +x ./kubectl \
+    && sudo mv kubectl /usr/local/bin
 ```
 
 Test your recently installed version of **kubectl**.
@@ -105,6 +95,8 @@ eksctl version
 ### Create and attach an IAM role to your Cloud9 instance.
 
 Click on the following [deep link](https://console.aws.amazon.com/iam/home#/roles$new?step=review&commonUseCase=EC2%2BEC2&selectedUseCase=EC2&policies=arn:aws:iam::aws:policy%2FAdministratorAccess) to open the IAM console and create a new role with Administrator access for your instance.
+
+*Note*: While it is not a best practice to provide AdministratorAccess, this allows to simplify the execution of operations in a test environment. *Make sure you always apply the least privilege principle in a production environment.*
 
 Make sure that the *AWS service* and *EC2* options are selected, then click *Next* to view permissions.
 
@@ -300,7 +292,11 @@ Expand the *Additional Configuration Section*, and make sure you select the 3 GB
 | EKS_ROLE_ARN      | arn:aws:iam::012345678901:role/eks-cicd-lab-codebuild-kubectl-role |
 | CLUSTER_NAME      | eks-cicd-lab-cluster |
 
-Where **012345678901** is your account number.
+Where **012345678901** is your account number. If you don't remember your account number, you can always retrieve it by running:
+
+``` 
+aws sts get-caller-identity | jq -r .Account
+```
 
 <p align="center">
     <img alt="codebuild_6" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/codebuild_6.PNG" width="85%">
