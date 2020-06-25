@@ -1,3 +1,5 @@
+## Deploying applications to Amazon EKS and AWS Fargate with a CI/CD pipeline based on AWS CodeBuild.
+
 
 ### Create a AWS Cloud9 environment
 
@@ -272,7 +274,8 @@ The pipeline will need to impersonate a role that is given system:masters privil
 Then, we'll use the AWS CLI to create a role names **eks-cicd-lab-codebuild-kubectl-role** using the kubectl-role.json that you just modified.
 
 ```
-aws iam create-role --role-name eks-cicd-lab-codebuild-kubectl-role --assume-role-policy-document file://~/environment/virtual-immersion-week-labs/cicd-eks-fargate/kubectl-role.json
+AWS_ACCOUNT_ID=$(aws sts get-caller-identity | jq -r .Account)
+aws iam create-role --role-name eks-cicd-lab-codebuild-kubectl-role --assume-role-policy-document "$(cat ~/environment/virtual-immersion-week-labs/cicd-eks-fargate/kubectl-role.json | sed s/\<ACCOUNT_ID\>/$AWS_ACCOUNT_ID/g)"
 ```
 
 ### Check whether the cluster has already been created.

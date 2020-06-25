@@ -4,7 +4,7 @@
         {
             "Effect": "Allow",
             "Principal": {
-                "AWS": "arn:aws:iam::012345678901:role/service-role/codebuild-eks-cicd-build-pipeline-project-service-role"
+                "AWS": "arn:aws:iam::<ACCOUNT_ID>:role/service-role/codebuild-eks-cicd-build-pipeline-project-service-role"
             },
             "Action": "sts:AssumeRole"
         }

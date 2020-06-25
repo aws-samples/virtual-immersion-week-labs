@@ -14,7 +14,7 @@ spec:
         app: "2048"
     spec:
       containers:
-      - image: 038821543405.dkr.ecr.eu-west-1.amazonaws.com/eks-lab-ecr-repo:$IMAGE_TAG
+      - image: <ACCOUNT_ID>.dkr.ecr.eu-west-1.amazonaws.com/eks-lab-ecr-repo:$IMAGE_TAG
         imagePullPolicy: Always
         name: "2048"
         ports:
