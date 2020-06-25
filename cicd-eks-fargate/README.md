@@ -1,6 +1,5 @@
 ## Deploying applications to Amazon EKS and AWS Fargate with a CI/CD pipeline based on AWS CodeBuild.
 
-
 ### Create a AWS Cloud9 environment
 
 Click on the Services menu at the top left corner of the screen, and enter **Cloud9** into the search bar, then click on the *Cloud9* menu item.
@@ -235,7 +234,9 @@ cd ~/environment && git clone https://git-codecommit.eu-west-1.amazonaws.com/v1/
 Copy the patched files from the Virtual Immersion Week lab directory 
 
 ```
+AWS_ACCOUNT_ID=$(aws sts get-caller-identity | jq -r .Account)
 cp -f virtual-immersion-week-labs/cicd-eks-fargate/2048-patches/* ~/environment/eks-cicd-lab-git-repo
+sed -i "s/<ACCOUNT_ID>/${AWS_ACCOUNT_ID}/g" ~/environment/eks-cicd-lab-git-repo/2048-game-deployment.yaml
 ```
 
 Now, the AWS CodeCommit repository contains all the files needed to configure the build pipeline. Commit the changes to the repository and push them.
