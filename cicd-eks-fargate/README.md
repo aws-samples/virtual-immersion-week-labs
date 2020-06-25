@@ -11,7 +11,7 @@ Click on the Services menu at the top left corner of the screen, and enter **Clo
 Click on the *Create environment* button to start creating a new environment.
 
 <p align="center">
-    <img alt="cloud9_2" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/masfeature/cicd-eks-fargate-labter/cicd-eks-fargate/img/cloud9_2.png" width="55%">
+    <img alt="cloud9_2" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/masfeature/cicd-eks-fargate-lab/cicd-eks-fargate/img/cloud9_2.png" width="55%">
 </p>
 
 Enter **MyCloud9Environment** in the *Name* field, and click on the *Next step* button to continue.
