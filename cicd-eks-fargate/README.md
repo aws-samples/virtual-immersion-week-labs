@@ -4,37 +4,37 @@
 Click on the Services menu at the top left corner of the screen, and enter **Cloud9** into the search bar, then click on the *Cloud9* menu item.
 
 <p align="center">
-    <img alt="cloud9_1" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/master/cicd-eks-fargate/img/cloud9_1.png" width="25%">
+    <img alt="cloud9_1" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/cloud9_1.png" width="25%">
 </p>
 
 Click on the *Create environment* button to start creating a new environment.
 
 <p align="center">
-    <img alt="cloud9_2" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/master/cicd-eks-fargate/img/cloud9_2.png" width="55%">
+    <img alt="cloud9_2" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/masfeature/cicd-eks-fargate-labter/cicd-eks-fargate/img/cloud9_2.png" width="55%">
 </p>
 
 Enter **MyCloud9Environment** in the *Name* field, and click on the *Next step* button to continue.
 
 <p align="center">
-    <img alt="cloud9_3" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/master/cicd-eks-fargate/img/cloud9_3.png" width="85%">
+    <img alt="cloud9_3" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/cloud9_3.png" width="85%">
 </p>
 
 Leave the rest as it is, and click on the *Next step* button to continue.
 
 <p align="center">
-    <img alt="cloud9_4" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/master/cicd-eks-fargate/img/cloud9_4.png" width="85%">
+    <img alt="cloud9_4" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/cloud9_4.png" width="85%">
 </p>
 
 Review the parameters and click on the *Create environment* button.
 
 <p align="center">
-    <img alt="cloud9_5" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/master/cicd-eks-fargate/img/cloud9_5.png" width="85%">
+    <img alt="cloud9_5" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/cloud9_5.png" width="85%">
 </p>
 
 After a brief setup process, you will be taken to your newly created AWS Cloud9 environment. 
 
 <p align="center">
-    <img alt="cloud9_6" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/master/cicd-eks-fargate/img/cloud9_6.png" width="85%">
+    <img alt="cloud9_6" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/cloud9_6.png" width="85%">
 </p>
 
 ### Download and install dependencies
@@ -108,23 +108,25 @@ Click on the following [deep link](https://console.aws.amazon.com/iam/home#/role
 Make sure that the *AWS service* and *EC2* options are selected, then click *Next* to view permissions.
 
 <p align="center">
-    <img alt="iam_1" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/master/cicd-eks-fargate/img/iam_1.png" width="85%">
+    <img alt="iam_1" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/iam_1.png" width="85%">
 </p>
 
 Make sure that **AdministratorAccess** is checked, then click *Next* to review.
 
 <p align="center">
-    <img alt="iam_2" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/master/cicd-eks-fargate/img/iam_2.png" width="85%">
+    <img alt="iam_2" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/iam_2.png" width="85%">
 </p>
 
-Enter *eks-cloud9-admin* as the role name, and click *Create role*.
+Skip the tags by clicking on the *Next: Review* button.
 
 <p align="center">
-    <img alt="iam_3" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/master/cicd-eks-fargate/img/iam_3.png" width="85%">
+    <img alt="iam_3" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/iam_3.png" width="85%">
 </p>
 
+Enter *eks-cicd-cloud9-admin* as the role name, and click *Create role*.
+
 <p align="center">
-    <img alt="iam_4" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/master/cicd-eks-fargate/img/iam_4.png" width="85%">
+    <img alt="iam_4" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/iam_4.png" width="85%">
 </p>
 
 #### Assign the newly created IAM role to your Cloud9 instance.
@@ -133,11 +135,23 @@ Click on the following [deep link](https://console.aws.amazon.com/ec2/v2/home?#I
 
 Click on *Actions*, select *Instance Settings*, and click *Attach/Replace IAM Role*.
 
-From the *IAM role* dropdown, select the **eks-cloud9-admin** role, and click on *Apply*.
+<p align="center">
+    <img alt="ec2_role_1" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/ec2_role_1.png" width="85%">
+</p>
+
+From the *IAM role* dropdown, select the **eks-cicd-cloud9-admin** role, and click on *Apply*.
+
+<p align="center">
+    <img alt="ec2_role_2" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/ec2_role_2.png" width="85%">
+</p>
 
 #### Configure Cloud9 to use the newly assigned role.
 
 Click on the gear at the top right corner, then click on *AWS Settings*, and disable the *AWS managed temporary credentials* option.
+
+<p align="center">
+    <img alt="cloud9_credentials" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/feature/cicd-eks-fargate-lab/cicd-eks-fargate/img/cloud9_credentials.png" width="85%">
+</p>
 
 Erase the credentials that may be cached in the Cloud9 environment.
 
@@ -154,35 +168,55 @@ aws configure set default.region ${AWS_REGION}
 aws configure get default.region
 ```
 
-Make sure Cloud9 is using the **eks-cloud9-admin** role that we created.
+Make sure Cloud9 is using the **eks-cicd-cloud9-admin** role that we created.
 
 ```
 INSTANCE_PROFILE_NAME=`basename $(aws ec2 describe-instances --filters Name=tag:Name,Values=aws-cloud9-${C9_PROJECT}-${C9_PID} | jq -r '.Reservations[0].Instances[0].IamInstanceProfile.Arn' | awk -F "/" "{print $2}")`
 aws iam get-instance-profile --instance-profile-name $INSTANCE_PROFILE_NAME --query "InstanceProfile.Roles[0].RoleName" --output text
 ```
 
-The output should be the name of the role, **eks-cloud9-admin**.
+The output should be the name of the role, **eks-cicd-cloud9-admin**.
 
 
-### Create the EKS cluster
+### Start the EKS cluster provisioning.
 
-Generate an SSH key in Cloud9.
-
-```
-ssh-keygen
-```
-
-Upload the public key to your EC2 region.
-```
-aws ec2 import-key-pair --key-name "ekslab" --public-key-material file://~/.ssh/id_rsa.pub
-```
-
+The next step is to create the EKS cluster where we will be deploying our application. We will name the cluster **eks-cicd-lab-cluster**.
 
 ```
-eksctl create cluster --name ekslabcluster --version 1.16 --region eu-west-1 --full-ecr-access --fargate
+eksctl create cluster --name eks-cicd-lab-cluster --version 1.16 --region eu-west-1 --full-ecr-access --fargate --alb-ingress-access
 ```
 
-Cluster provisioning takes approximately between 10-15 minutes. When complete, test that your **kubectl** configuration is correct.
+Cluster provisioning takes approximately between 10-15 minutes.
+
+### Prepare your application for deployment.
+
+#### Create an Amazon ECR repository.
+
+First, create the Amazon ECR repository where we'll store our images. Take note of the repository URI, as you will need it later to configure the CI/CD pipeline.
+
+```
+aws ecr create-repository --repository-name=eks-cicd-lab-ecr-repo | jq -r .repository.repositoryUri
+```
+
+Then, create an AWS CodeCommit repository where we'll store the application code. Take note of the clone URL, as you will need it to push the patched application into your AWS CodeCommit repo.
+
+```
+aws codecommit create-repository --repository-name=eks-cicd-lab-git-repo | jq -r .repositoryMetadata.cloneUrlHttp
+```
+
+We'll use a stripped-down version of the 2048 game available on GitHub as our test application.
+
+```
+cd ~/environment && git clone --bare https://github.com/alexwhen/docker-2048.git
+```
+
+
+
+```
+cd docker-2048 && git push --mirror https://git-codecommit.eu-west-1.amazonaws.com/v1/repos/eks-cicd-lab-git-repo
+```
+
+When complete, test that your **kubectl** configuration is correct.
 
 ```
 kubectl get svc
@@ -208,26 +242,30 @@ fargate-ip-192-168-145-249.eu-west-1.compute.internal   Ready    <none>   9m6s  
 fargate-ip-192-168-159-100.eu-west-1.compute.internal   Ready    <none>   9m9s   v1.16.8-eks-e16311
 ```
 
-Now, attach the corresponding policy to the EKS node roles 
-
-### Initialize the CDK application
+Get the VPC ID of the newly created cluster. You will need this value to configure the ALB Ingress Controller.
 
 ```
-cd ~/environment && mkdir eks-cicd-cdk
+eksctl get cluster --region eu-west-1 --name eks-lab-cluster -o json | jq -r .[0].ResourcesVpcConfig.VpcId
 ```
 
+Now, create an IAM OIDC provider
+
 ```
-cdk init app --language=python
+eksctl utils associate-iam-oidc-provider --cluster=eks-lab-cluster --approve
 ```
 
+#### Configure the ALB Ingress Provider
 
+```
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/aws-alb-ingress-controller/v1.1.4/docs/examples/rbac-role.yaml
+```
 
+wget https://raw.githubusercontent.com/kubernetes-sigs/aws-alb-ingress-controller/v1.1.4/docs/examples/alb-ingress-controller.yaml
 
+Open the **alb-ingress-controller.yaml** in a Cloud9 tab, and change uncomment the following lines:
 
-
-
-
-
+```
+```
 
 
 
@@ -291,7 +329,7 @@ kubectl logs -n kube-system $(kubectl get po -n kube-system | egrep -o alb-ingre
 
 ## Prepare the app
 
-aws ecr create-repository --repository-name=eks-lab-ecr-repo
+aws ecr create-repository --repository-name=eks-cicd-lab-ecr-repo
 
 ```
 {
