@@ -1,5 +1,5 @@
 
-# LAB 01 Launch and connect to a new Windows EC2 instance
+# LAB 01 Launch a new Windows EC2 instance and add a new Drive
 
 ## 0. Before your start
 
