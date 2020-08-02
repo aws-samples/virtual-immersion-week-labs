@@ -23,8 +23,14 @@ sudo yum install libpcap-devel
 
 `sudo ~/environment/FreeRTOS/FreeRTOS/Demo/Posix_GCC/build/posix_demo`
 
-6. (Optional) Switch to the "Blinky" demo by changing the flag 'mainCREATE_SIMPLE_BLINKY_DEMO_ONLY' to 1 and 'mainCREATE_TCP_ECHO_TASKS_SINGLE' to 0
-
 ![TCP](posix-demo-tcp.png)
 
+6. (Optional) Switch to the "Blinky" demo by changing the flag 'mainCREATE_SIMPLE_BLINKY_DEMO_ONLY' to 1 and 'mainCREATE_TCP_ECHO_TASKS_SINGLE' to 0
+
 ![Blinky](posix-demo-blinky.png)
+
+7. (Optional) Try out the GNU Debugger. You can set break points using  'break {line}' and use 'n' execute the next line as single instruction or 's' to step into each function line by line.
+
+`sudo gdb ~/environment/FreeRTOS/FreeRTOS/Demo/Posix_GCC/build/posix_demo`
+
+![GBD](posix-demo-gdb.png)
