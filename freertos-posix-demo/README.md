@@ -6,8 +6,10 @@
 
 2. Once the environment is up and running. Go to the terminal and install the building tool SCons and install the libpcal development libraries.
 
-`sudo pip install scons`
-`sudo yum install libpcap-devel`
+```
+sudo pip install scons
+sudo yum install libpcap-devel
+```
 
 3. Clone the FreeRTOS/FreeRTOS repository recursively. This will make sure you get the latest FreeRTOS branch and the relevant FreeRTOS-Kernel branch 
 
