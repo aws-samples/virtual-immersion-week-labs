@@ -1,6 +1,6 @@
 ### FreeRTOS POSIX GCC Demo
 
-This step-by-step guide helps go through the steps required to run the demo. The steps include setting up a new Linux environment, installing dependencies, compiling the source code and executing the demo program.
+> This step-by-step guide helps go through the steps required to run the demo. The steps include setting up a new Linux environment, installing dependencies, compiling the source code and executing the demo program.
 
 1. Create a new Amazon Linux Cloud9 environment. 
 
@@ -19,6 +19,10 @@ This step-by-step guide helps go through the steps required to run the demo. The
 
 5. Run the project
 
-` sudo ~/environment/FreeRTOS/FreeRTOS/Demo/Posix_GCC/build/posix_demo`
+`sudo ~/environment/FreeRTOS/FreeRTOS/Demo/Posix_GCC/build/posix_demo`
 
 6. (Optional) Switch to the "Blinky" demo by changing the flag 'mainCREATE_SIMPLE_BLINKY_DEMO_ONLY' to 1 and 'mainCREATE_TCP_ECHO_TASKS_SINGLE' to 0
+
+![TCP](posix-demo-tcp.png)
+
+![Blinky](posix-demo-blinky.png)
