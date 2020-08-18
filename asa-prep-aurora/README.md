@@ -51,7 +51,7 @@
         - Expand the sub-section 'Additional connectivity configuration'
         - The DB subnet group will be selected automatically once you the VPC
         - Make sure the cluster Publicly accessible option is set to **No**.
-        - At VPC security group, remove the `default` security group
+        - At VPC security group, choose the `default` security group
     - Expand the **Additional configuration** section, and configure options as follows:
         - Set the Initial database name to `mylab`
         - Set Backup retention period to `1 day`
@@ -68,22 +68,18 @@
         - De-select/turn off the check box `Enable delete protection`. In a production use case, you will want to leave that option checked, but for testing purposes, un-checking this option will make it easier to clean up the resources once you have completed the lab.
     - Click `Create database` to provision the DB cluster.
 
-## 3. Configure the security group
 
-- 3.1 In the RDS console. select the radio button next to `auroralab-mysql-cluster` and click the `Modify` button
-- 3.1. Under **Network & Security** choose `myAurora-security-group`
-
-## 4. Retrieve the DB cluster endpoints
+## 3. Retrieve the DB cluster endpoints
 
 There are two endpoints created by default. The Cluster Endpoint will always point to the writer DB instance of the cluster, and should be used for both writes and reads. The Reader Endpoint will always resolve to one of the reader DB instances and should be used to offload read operations to read replicas. 
 
-- 4.1 In the RDS console, go to the DB cluster detail view by clicking on the cluster DB identifier.
-- 4.2 The Endpoints section in the Connectivity and security tab of the details page displays the endpoints. Note these values down, as you will use them later.
+- 3.1 In the RDS console, go to the DB cluster detail view by clicking on the cluster DB identifier.
+- 3.2 The Endpoints section in the Connectivity and security tab of the details page displays the endpoints. Note these values down, as you will use them later.
 
-## 5 Verify DB cluster
+## 4 Verify DB cluster
 
-- 5.1. Open the **Clolud9** service console
-- 5.2. Click on `Create Environment`
+- 4.1. Open the **Clolud9** service console
+- 4.2. Click on `Create Environment`
     - In the **Environment name and description** section:
         - Choose a name for your instance `mylabInstance`
     - In the **Environment settings** section:
@@ -91,12 +87,17 @@ There are two endpoints created by default. The Cluster Endpoint will always poi
         - Instance type: t2.micro (1 GiB RAM + 1 vCPU)
         - Platform: Amazon Linux
     - Click on `Create environment` to create a new Cloud9 environment
-- 5.3. Locate and expand terminal window located at the bottom of the screen
-- 5.4. Connect to your instance by typing the following commands, one by one. Make sure you replace the `{clusterEndpoint}` place holder with the value of the cluster endpoint created in the preceding steps:
-
+- 4.3. Locate and expand terminal window located at the bottom of the screen
+- 4.4. Connect to your instance by typing the following commands, one by one. Make sure you replace the `{clusterEndpoint}` place holder with the value of the cluster endpoint created in the preceding steps:
 ```
 export DBUSER=masteruser
 export DBPASS=AsaPrep-Wave1-2020
 export ENDPOINT={clusterEndpoint}
 mysql -h$ENDPOINT -u$DBUSER -p"$DBPASS" -e"SELECT @@aurora_version;"
 ```
+
+## 5. Configure the security group
+
+- 5.1 In the RDS console. select the radio button next to `auroralab-mysql-cluster` and click the `Modify` button
+- 5.2. Under **Network & Security** choose remove the default security group and replace it with `myAurora-security-group`
+- 5.3. Try connecting again by running the commands in step `4.4`
