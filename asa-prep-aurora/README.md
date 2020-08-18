@@ -100,9 +100,3 @@ TeamRole:~/environment $ mysql -h$ENDPOINT -u$DBUSER -p"$DBPASS" -e"SELECT @@aur
 | 1.17.8           |
 +------------------+
 ```
-
-## 5. Configure the security group
-
-- 5.1 In the RDS console. select the radio button next to `auroralab-mysql-cluster` and click the `Modify` button
-- 5.2. Under **Network & Security** choose remove the default security group and replace it with `myAurora-security-group`
-- 5.3. Try connecting again by running the commands in step `4.4`
