@@ -10,16 +10,11 @@
 
 - 1.1. Open the **VPC** service console
 - 1.2. Click on `Security Groups` under the SECURITY sub menu
-- 1.3. Create a new security group by clicking on `Create security group`
+- 1.3. Modify the default security group selecting the check box next to it and clicking Actions ->  Edit inbound
 - 1.4. Set the following options on the configuration screen for the new security group:
-    - In the **Basic details** section:
-        - Set the name to `myAurora-security-group` for the security group name: 
-        - Set the Description to `allow mysql traffic from the VPC` for the security group description
     - In the **Inbound rules** section:
         - Add a new rule. Set the type to `MySQL/Aurora`, source to `172.31.0.0/16` and description to `allow mysql traffic from the VPC`
-    - In the **Outbound rules** section:
-        - Leave the default rule as it is
-    - Click `Create security group` to create a the new security group
+    - Click `Save rules` to modify the default security group
 
 ## 2. Create the DB cluster
 
@@ -83,9 +78,9 @@ There are two endpoints created by default. The Cluster Endpoint will always poi
     - In the **Environment name and description** section:
         - Choose a name for your instance `mylabInstance`
     - In the **Environment settings** section:
-        - Environment type: Create a new EC2 instance for environment (direct access)
-        - Instance type: t2.micro (1 GiB RAM + 1 vCPU)
-        - Platform: Amazon Linux
+        - Environment type: `Create a new EC2 instance for environment (direct access)`
+        - Instance type: `t2.micro (1 GiB RAM + 1 vCPU)`
+        - Platform: `Amazon Linux`
     - Click on `Create environment` to create a new Cloud9 environment
 - 4.3. Locate and expand terminal window located at the bottom of the screen
 - 4.4. Connect to your instance by typing the following commands, one by one. Make sure you replace the `{clusterEndpoint}` place holder with the value of the cluster endpoint created in the preceding steps:
@@ -94,6 +89,15 @@ export DBUSER=masteruser
 export DBPASS=AsaPrep-Wave1-2020
 export ENDPOINT={clusterEndpoint}
 mysql -h$ENDPOINT -u$DBUSER -p"$DBPASS" -e"SELECT @@aurora_version;"
+```
+Congratulations! You should receive a message like the one below. Confirming you have access to your new Aurora Instance.
+
+```
++------------------+
+| @@aurora_version |
++------------------+
+| 1.17.8           |
++------------------+
 ```
 
 ## 5. Configure the security group
