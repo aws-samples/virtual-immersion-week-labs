@@ -93,6 +93,7 @@ mysql -h$ENDPOINT -u$DBUSER -p"$DBPASS" -e"SELECT @@aurora_version;"
 Congratulations! You should receive a message like the one below. Confirming you have access to your new Aurora Instance.
 
 ```
+TeamRole:~/environment $ mysql -h$ENDPOINT -u$DBUSER -p"$DBPASS" -e"SELECT @@aurora_version;"
 +------------------+
 | @@aurora_version |
 +------------------+
