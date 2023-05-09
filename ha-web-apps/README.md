@@ -530,7 +530,7 @@ Click on the *Create bucket* button to continue.
     <img alt="s3_2" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/master/ha-web-apps/img/s3_2.png" width="85%">
 </p>
 
-4. Click on the *Add files* button to upload your application files, and pick the **index.html** and **jquery-3.5.1.min.js** files from your hard disk.
+4. Click on the *Add files* button to upload your application files, and pick the **index.html** and **jquery-3.6.4.min.js** files from your hard disk.
 
 <p align="center">
     <img alt="s3_3" src="https://github.com/aws-samples/virtual-immersion-week-labs/raw/master/ha-web-apps/img/s3_3.png" width="85%">
